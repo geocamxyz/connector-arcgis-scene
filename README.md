@@ -32,7 +32,7 @@ The connector can be imported via a module script or using the npm package and u
 import { arcgisScene } from "arcgis-scene"
 ```
 ### Setup:
-The connector can be setup using the below code. It requires a scene element which is usually layout such as 
+The connector can be setup using the below code. It requires a scene element which has the following layout
 ```
 <div class="wrapper">
   <div id="scene" class="scene" />
