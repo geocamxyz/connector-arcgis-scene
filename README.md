@@ -6,7 +6,7 @@ npm install 'https://gitpkg.now.sh/geocamxyz/plugin-arcgis-scene/src?v1.0.0'
 ```
 or for a particual commit version:
 ```
-npm install 'https://gitpkg.now.sh/geocamxyz/plugin-arcgis-scenesrc?46bd942'
+npm install 'https://gitpkg.now.sh/geocamxyz/plugin-arcgis-scenesrc?397d152'
 ```
 ### Import Map (External Loading):
 ```
@@ -14,7 +14,7 @@ https://cdn.jsdelivr.net/gh/geocamxyz/plugin-arcgis-scene@v1.0.0/dist/arcgis-sce
 ```
 or for a particual commit version:
 ```
-https://cdn.jsdelivr.net/gh/geocamxyz/plugin-arcgis-scene@46bd942/dist/arcgis-scene.js
+https://cdn.jsdelivr.net/gh/geocamxyz/plugin-arcgis-scene@397d152/dist/arcgis-scene.js
 ```
 ### Usage:
 The .js file can be imported into your .html file using the below code (This can be ignored if your using the NPM package).
@@ -29,7 +29,7 @@ The .js file can be imported into your .html file using the below code (This can
 ```
 The connector can be imported via a module script or using the npm package and using the below import statement.
 ```
-import { arcgis-scene } from "arcgis-scene"
+import { arcgisScene } from "arcgis-scene"
 ```
 ### Setup:
 The connector can be setup using the below code. It requires a scene element which is usually layout such as 
