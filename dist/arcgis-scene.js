@@ -315,7 +315,18 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
         "title",
         m ? "turn auto-brightness off" : "turn auto-brightness on"
       ), e.reload(I() ? te : "[1,1,1]");
-    }), ee = e.visible((m) => z(e.facing())), a.when(async () => {
+    }), ee = e.visible((m) => z(e.facing()));
+    const [v, E, b] = await Oe(
+      [
+        "esri/layers/GraphicsLayer",
+        "esri/core/reactiveUtils",
+        "esri/layers/FeatureLayer"
+      ],
+      {
+        version: "4.26"
+      }
+    );
+    if (a.when(async () => {
       a.on("clickable", (l) => {
         ue = l;
       }), a.on("immediate-click", (l) => {
@@ -398,18 +409,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
           });
         })) : l || e.hide();
       });
-    });
-    const [v, E, b] = await Oe(
-      [
-        "esri/layers/GraphicsLayer",
-        "esri/core/reactiveUtils",
-        "esri/layers/FeatureLayer"
-      ],
-      {
-        version: "4.26"
-      }
-    );
-    if (Q) {
+    }), Q) {
       const m = `${Q}/0`;
       console.log("shots url is", m);
       const V = new b({
@@ -418,9 +418,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
         // start with agressive simplifaction - view should get scale change early on to override this
       });
       a.map.add(V), V.when((B) => {
-        const P = B.fields, F = P.find((l) => ge(l, "filenames")), j = P.find(
-          (l) => ge(l, "calibration")
-        );
+        const P = B.fields, F = P.find((l) => ge(l, "filenames")), j = P.find((l) => ge(l, "calibration"));
         d.push({
           layer: V,
           shot: "id",
