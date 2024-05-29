@@ -252,7 +252,7 @@ export const arcgisScene = function (config = {}) {
     }
   };
 
-    let lastShot, lastLayer;
+  let lastShot, lastLayer;
 
   const shotClick = function (graphic, shotLayerIndex) {
     const lockedTo = viewlock();
@@ -417,6 +417,17 @@ export const arcgisScene = function (config = {}) {
     });
     unsubVisible = viewer.visible((v) => updateFov(viewer.facing()));
 
+    const [GraphicsLayer, watchUtils, FeatureLayer] = await loadModules(
+      [
+        "esri/layers/GraphicsLayer",
+        "esri/core/reactiveUtils",
+        "esri/layers/FeatureLayer",
+      ],
+      {
+        version: "4.26",
+      }
+    );
+
     sceneView.when(async () => {
       sceneView.on("clickable", (e) => {
         clickable = e;
@@ -534,13 +545,12 @@ export const arcgisScene = function (config = {}) {
       watchUtils.watch(() => sceneView.center, centerChange);
       watchUtils.watch(() => sceneView.camera.position, cameraChange);
 
-
       viewer.shot((shot) => {
         const id = parseInt(
           typeof shot === "object" && shot !== null ? shot.id : shot
         );
         if (id && id !== lastShot) {
-          console.log("Got shot", shot, 'layers', geocamLayers.length);
+          console.log("Got shot", shot, "layers", geocamLayers.length);
           geocamLayers.forEach((gcl, i) => {
             const layer = gcl.layer;
             viewer.resetProgress();
@@ -565,127 +575,110 @@ export const arcgisScene = function (config = {}) {
           if (!shot) viewer.hide();
         }
       });
-      
     });
 
-          // show and rotate FOV graphic on rotation
+    if (src) {
+      // add geocam layers
+      const shotsUrl = `${src}/0`;
+      console.log("shots url is", shotsUrl);
+      const shotsLayer = new FeatureLayer({
+        url: shotsUrl,
+        definitionExpression: "mod(id,100) = 0", // start with agressive simplifaction - view should get scale change early on to override this
+      });
+      sceneView.map.add(shotsLayer);
+      shotsLayer.when((layer) => {
+        const fields = layer.fields;
 
-      const [GraphicsLayer, watchUtils, FeatureLayer] = await loadModules(
-        [
-          "esri/layers/GraphicsLayer",
-          "esri/core/reactiveUtils",
-          "esri/layers/FeatureLayer",
-        ],
-        {
-          version: "4.26",
+        const filenames = fields.find((f) => fieldMatches(f, "filenames"));
+        const calibration = fields.find((f) => fieldMatches(f, "calibration"));
+        geocamLayers.push({
+          layer: shotsLayer,
+          shot: "id",
+          filenames: "filenames",
+          yaw: "yaw",
+          rotation: "rotation_matrix",
+          datetime: "utc_time",
+          brightness: null,
+          base: getBase(filenames && filenames.description),
+          calibration: "calibration",
+          rigId: null,
+          calibrationBase: getBase(calibration.description),
+          capture: "capture",
+        });
+
+        const buffer = {
+          xmin: -0.005,
+          ymin: -0.005,
+          xmax: 0.005,
+          ymax: 0.005,
+        };
+        const props = Object.keys(buffer);
+        const extent = {};
+        for (let i = 0; i < props.length; i++) {
+          extent[props[i]] =
+            parseFloat(layer.fullExtent[props[i]]) + buffer[props[i]];
         }
-      );
 
-      if (src) {
-        // add geocam layers
-        const shotsUrl = `${src}/0`;
-        console.log("shots url is", shotsUrl);
-        const shotsLayer = new FeatureLayer({
-          url: shotsUrl,
-          definitionExpression: "mod(id,100) = 0", // start with agressive simplifaction - view should get scale change early on to override this
-        });
-        sceneView.map.add(shotsLayer);
-        shotsLayer.when((layer) => {
-          const fields = layer.fields;
+        sceneView.extent = extent;
+      });
 
-          const filenames = fields.find((f) => fieldMatches(f, "filenames"));
-          const calibration = fields.find((f) =>
-            fieldMatches(f, "calibration")
-          );
-          geocamLayers.push({
-            layer: shotsLayer,
-            shot: "id",
-            filenames: "filenames",
-            yaw: "yaw",
-            rotation: "rotation_matrix",
-            datetime: "utc_time",
-            brightness: null,
-            base: getBase(filenames && filenames.description),
-            calibration: "calibration",
-            rigId: null,
-            calibrationBase: getBase(calibration.description),
-            capture: "capture",
-          });
-
-          const buffer = {
-            xmin: -0.005,
-            ymin: -0.005,
-            xmax: 0.005,
-            ymax: 0.005,
-          };
-          const props = Object.keys(buffer);
-          const extent = {};
-          for (let i = 0; i < props.length; i++) {
-            extent[props[i]] =
-              parseFloat(layer.fullExtent[props[i]]) + buffer[props[i]];
-          }
-
-          sceneView.extent = extent;
-        });
-
-        const pointFeaturesUrl = `${src}/1`;
-        console.log("points features url is", pointFeaturesUrl);
-        const pointsFeaturesLayer = new FeatureLayer({
-          url: pointFeaturesUrl,
-          popupEnabled: true,
-          popupTemplate: {
-            title: "{reference}",
-            content: [
-              {
-                type: "fields",
-                fieldInfos: [
-                  {
-                    fieldName: "embed",
-                    label: "content",
-                  },
-                ],
-              },
-            ],
-          },
-        });
-        sceneView.map.add(pointsFeaturesLayer);
-      }
-
-      fovLayer = new GraphicsLayer({
-        title: "GeoCam Field of View",
-        geometryType: "point",
-        spatialReference: {
-          wkid: 4326,
+      const pointFeaturesUrl = `${src}/1`;
+      console.log("points features url is", pointFeaturesUrl);
+      const pointsFeaturesLayer = new FeatureLayer({
+        url: pointFeaturesUrl,
+        popupEnabled: true,
+        popupTemplate: {
+          title: "{reference}",
+          content: [
+            {
+              type: "fields",
+              fieldInfos: [
+                {
+                  fieldName: "embed",
+                  label: "content",
+                },
+              ],
+            },
+          ],
         },
       });
-      sceneView.map.layers.add(fovLayer);
+      sceneView.map.add(pointsFeaturesLayer);
+    }
 
-      var handleKeyDown = function (evt) {
-        const key = evt.key;
-        switch (evt.key) {
-          case "Escape": {
-            viewlock(null);
-            mapView.graphics.removeAll();
-            break;
-          }
-          case " ": {
-            spaceDown = true;
-          }
+    fovLayer = new GraphicsLayer({
+      title: "GeoCam Field of View",
+      geometryType: "point",
+      spatialReference: {
+        wkid: 4326,
+      },
+    });
+    sceneView.map.layers.add(fovLayer);
+
+    var handleKeyDown = function (evt) {
+      const key = evt.key;
+      switch (evt.key) {
+        case "Escape": {
+          viewlock(null);
+          mapView.graphics.removeAll();
+          break;
         }
-      };
-
-      var handleKeyUp = function (evt) {
-        const key = evt.key;
-        switch (evt.key) {
-          case " ": {
-            spaceDown = false;
-          }
+        case " ": {
+          spaceDown = true;
         }
-      };
+      }
+    };
 
-      document.addEventListener("keydown", handleKeyDown);
-      document.addEventListener("keyup", handleKeyUp);
+    var handleKeyUp = function (evt) {
+      const key = evt.key;
+      switch (evt.key) {
+        case " ": {
+          spaceDown = false;
+        }
+      }
+    };
 
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
   };
 
   this.destroy = function () {
