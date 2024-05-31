@@ -22,6 +22,12 @@ export class GeocamViewerArcgisScene extends HTMLElement {
         const prevNextPlugin = prevnext && prevnext.plugin;
         this.plugin = new arcgisScene({ sceneView, prevNextPlugin, src });
         parent.viewer.plugin(this.plugin);
+        const screenShot = parent.getElementsByTagName(
+          "geocam-viewer-screen-shot"
+        )[0];
+        if (screenShot && screenShot.plugin) {
+          screenShot.plugin.arcgisView(sceneView);
+        }
       } else {
         console.error("GeocamViewerArcgisScene must be a child of GeocamViewer");
       }
