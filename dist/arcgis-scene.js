@@ -19,8 +19,8 @@ function He(t) {
   t === void 0 && (t = Le);
   var o = ke(t), e = xe(t);
   if (e !== Z && e.major === 3) {
-    var s = e.minor <= 10 ? "js/" : "";
-    return "".concat(o).concat(s, "esri/css/esri.css");
+    var a = e.minor <= 10 ? "js/" : "";
+    return "".concat(o).concat(a, "esri/css/esri.css");
   } else
     return "".concat(o, "esri/themes/light/main.css");
 }
@@ -42,8 +42,8 @@ function Be(t) {
   return !t || xe(t) ? He(t) : t;
 }
 function Pe(t, o) {
-  var e = Be(t), s = Ge(e);
-  return s || (s = Ie(e), $e(s, o)), s;
+  var e = Be(t), a = Ge(e);
+  return a || (a = Ie(e), $e(a, o)), a;
 }
 var Fe = {};
 function Ue(t) {
@@ -51,16 +51,16 @@ function Ue(t) {
   return o.type = "text/javascript", o.src = t, o.setAttribute("data-esri-loader", "loading"), o;
 }
 function be(t, o, e) {
-  var s;
-  e && (s = Je(t, e));
+  var a;
+  e && (a = Je(t, e));
   var d = function() {
-    o(t), t.removeEventListener("load", d, !1), s && t.removeEventListener("error", s, !1);
+    o(t), t.removeEventListener("load", d, !1), a && t.removeEventListener("error", a, !1);
   };
   t.addEventListener("load", d, !1);
 }
 function Je(t, o) {
-  var e = function(s) {
-    o(s.error || new Error("There was an error attempting to load ".concat(t.src))), t.removeEventListener("error", e, !1);
+  var e = function(a) {
+    o(a.error || new Error("There was an error attempting to load ".concat(t.src))), t.removeEventListener("error", e, !1);
   };
   return t.addEventListener("error", e, !1), e;
 }
@@ -78,12 +78,12 @@ function qe(t) {
     for (var g in d)
       Object.prototype.hasOwnProperty.call(d, g) && (o[g] = d[g]);
   });
-  var e = o.version, s = o.url || ke(e);
+  var e = o.version, a = o.url || ke(e);
   return new ye.Promise(function(d, g) {
-    var h = Se();
-    if (h) {
-      var J = h.getAttribute("src");
-      J !== s ? g(new Error("The ArcGIS API for JavaScript is already loaded (".concat(J, ")."))) : W() ? d(h) : be(h, d, g);
+    var f = Se();
+    if (f) {
+      var J = f.getAttribute("src");
+      J !== a ? g(new Error("The ArcGIS API for JavaScript is already loaded (".concat(J, ")."))) : W() ? d(f) : be(f, d, g);
     } else if (W())
       g(new Error("The ArcGIS API for JavaScript is already loaded."));
     else {
@@ -92,35 +92,35 @@ function qe(t) {
         var D = M === !0;
         Pe(D ? e : M, o.insertCssBefore);
       }
-      h = Ue(s), be(h, function() {
-        h.setAttribute("data-esri-loader", "loaded"), d(h);
-      }, g), document.body.appendChild(h);
+      f = Ue(a), be(f, function() {
+        f.setAttribute("data-esri-loader", "loaded"), d(f);
+      }, g), document.body.appendChild(f);
     }
   });
 }
 function we(t) {
   return new ye.Promise(function(o, e) {
-    var s = window.require.on("error", e);
+    var a = window.require.on("error", e);
     window.require(t, function() {
       for (var d = [], g = 0; g < arguments.length; g++)
         d[g] = arguments[g];
-      s.remove(), o(d);
+      a.remove(), o(d);
     });
   });
 }
 function Oe(t, o) {
   if (o === void 0 && (o = {}), W())
     return we(t);
-  var e = Se(), s = e && e.getAttribute("src");
-  return !o.url && s && (o.url = s), qe(o).then(function() {
+  var e = Se(), a = e && e.getAttribute("src");
+  return !o.url && a && (o.url = a), qe(o).then(function() {
     return we(t);
   });
 }
-const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t, o = {}, e = "") => {
-  const s = document.createElement(t);
+const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t, o = {}, e = "") => {
+  const a = document.createElement(t);
   for (let d in o)
-    s.setAttribute(d, o[d]);
-  return s.innerHTML = e, s;
+    a.setAttribute(d, o[d]);
+  return a.innerHTML = e, a;
 }, Re = (t, o) => (document.getElementById(t) || document.getElementsByTagName("head")[0].prepend(S("STYLE", { type: "text/css" }, o)), !0), De = function(t = {}) {
   Re("geocam-argis-map", `
       .geocam-auto-rotate-checkbox, .geocam-auto-brightness-checkbox {
@@ -150,9 +150,9 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
       }
 
     `);
-  let e, s, d = [], g, h, J, M, D, ee, q, H, O, I, te, $, oe, Y, ne, re, ae, se, ie, ce, Ee, le, Ce, ue = !0, de;
-  const { sceneView: a, prevNextPlugin: K, widgets: _e, expands: Ke, src: Q } = t, me = function(n, i, c, r, u) {
-    return 1 / Math.sqrt(a.scale / 70), {
+  let e, a, d = [], g, f, J, M, D, ee, q, H, O, I, te, $, oe, Y, ne, re, ae, se, ie, ce, Ee, le, Ce, ue = !0, de;
+  const { sceneView: s, prevNextPlugin: K, widgets: _e, expands: Ke, src: Q } = t, me = function(n, i, c, r, u) {
+    return 1 / Math.sqrt(s.scale / 70), {
       geometry: {
         type: "point",
         latitude: c,
@@ -189,8 +189,8 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
   const z = function(n, i, c, r, u) {
     if (console.log("update fov", n, i, c, r, u), g && (g.removeAll(), e.visible() && n !== null))
       if (H()) {
-        const f = a.camera.clone();
-        (c || c === 0) && (f.position.latitude = c), (i || i === 0) && (f.position.longitude = i), (r || r === 0) && (f.position.z = r), (n || n === 0) && (f.heading = n), (u || u === 0) && (f.tilt = 90 - u), f.fov = parseInt(e.fov()), console.log("camera fov", f), a.goTo(f, { animate: !1 }), a.camera.fov = e.fov();
+        const h = s.camera.clone();
+        (c || c === 0) && (h.position.latitude = c), (i || i === 0) && (h.position.longitude = i), (r || r === 0) && (h.position.z = r), (n || n === 0) && (h.heading = n), (u || u === 0) && (h.tilt = 90 - u), h.fov = parseInt(e.fov()), console.log("camera fov", h), s.goTo(h, { animate: !1 }), s.camera.fov = e.fov();
       } else
         L = me(
           n || 0,
@@ -214,8 +214,8 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
     if (n.filenames)
       return JSON.parse(i[n.filenames]).map((r) => Array.isArray(r) ? r.map((u) => /^https?:\/\//i.test(u) ? r : `${c}${u}`) : /^https?:\/\//i.test(r) ? r : `${c}${r}`);
     {
-      const r = i[n.capture].split(".")[0], u = r.split("/").pop(), f = JSON.parse(i[n.lengths]), v = JSON.parse(i[n.offsets]);
-      return f.map((b, w) => {
+      const r = i[n.capture].split(".")[0], u = r.split("/").pop(), h = JSON.parse(i[n.lengths]), v = JSON.parse(i[n.offsets]);
+      return h.map((b, w) => {
         const A = encodeURIComponent(
           `https://s3.us-west-004.backblazeb2.com/gc-raw-surveys-archive/${r}_${w}.tar`
         );
@@ -236,7 +236,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
     console.log("shotclick with viewlock", c);
     const r = d[i], u = n.attributes[r.shot];
     he = u, e.shot(u), K && (K.prev(n.attributes.prev), K.next(n.attributes.next));
-    const f = [0, 1, 2].map(
+    const h = [0, 1, 2].map(
       (A) => je(r.calibrationBase, {
         camera: A,
         rig_id: n.attributes[r.rigId],
@@ -249,7 +249,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
       const A = bearing(n.geometry, c);
       e.facing(A);
     }
-    e.show(w, v, f, E, b), z(
+    e.show(w, v, h, E, b), z(
       e.facing(),
       n.geometry.longitude,
       n.geometry.latitude,
@@ -260,19 +260,19 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
   let pe;
   const ve = function(n, i, c, r) {
     clearTimeout(pe), pe = setTimeout(() => {
-      const f = Math.ceil(n / 500), v = a.extent, E = `${v.xmin},${v.ymin},${v.xmax},${v.ymax},${v.spatialReference.wkid}`, b = `mod(id,${f}) = 0 AND extent = ${E}`;
+      const h = Math.ceil(n / 500), v = s.extent, E = `${v.xmin},${v.ymin},${v.xmax},${v.ymax},${v.spatialReference.wkid}`, b = `mod(id,${h}) = 0 AND extent = ${E}`;
       d.forEach((w) => {
         w.layer.definitionExpression !== b && (w.layer.definitionExpression = b, console.log(
           "definition expression changed for",
           w.layer,
           b
         ));
-      }), oe(a.zoom), H() || z(e.facing());
+      }), oe(s.zoom), H() || z(e.facing());
     }, 500);
   }, Ne = function(n, i, c, r) {
-    le([a.center.longitude, a.center.latitude]);
+    le([s.center.longitude, s.center.latitude]);
   }, Te = function(n, i, c, r) {
-    ne(a.camera.position.latitude), re(a.camera.position.longitude), se(a.camera.position.z), ie(a.camera.tilt), ae(a.camera.heading), ce(a.camera.fov);
+    ne(s.camera.position.latitude), re(s.camera.position.longitude), se(s.camera.position.z), ie(s.camera.tilt), ae(s.camera.heading), ce(s.camera.fov);
   };
   this.init = async function(n) {
     e = n, de = e.store("marker"), oe = e.store("zoom"), le = e.store("center"), ne = e.store("camLat"), re = e.store("camLng"), se = e.store("camAlt"), ie = e.store("camTilt"), ae = e.store("camHdg"), ce = e.store("camFov"), Y = e.store("viewlock"), H = e.store("autorotate"), q = S("DIV", { class: "geocam-auto-rotate" });
@@ -303,14 +303,14 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
       type: "checkbox",
       class: "geocam-auto-brightness-checkbox"
     });
-    const f = S(
+    const h = S(
       "SPAN",
       { class: "geocam-auto-brightness-span geocam-viewer-control-button" },
       " Autobrightness"
     );
     $.disabled = !0, $.checked = I(), $.addEventListener("change", () => {
       I($.checked);
-    }), u.appendChild($), u.appendChild(f), O.appendChild(u), e.addControl(O, "left-top"), D = I((m) => {
+    }), u.appendChild($), u.appendChild(h), O.appendChild(u), e.addControl(O, "left-top"), D = I((m) => {
       O.setAttribute(
         "title",
         m ? "turn auto-brightness off" : "turn auto-brightness on"
@@ -326,25 +326,25 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
         version: "4.26"
       }
     );
-    if (a.when(async () => {
-      a.on("clickable", (l) => {
+    if (s.when(async () => {
+      s.on("clickable", (l) => {
         ue = l;
-      }), a.on("immediate-click", (l) => {
+      }), s.on("immediate-click", (l) => {
         if (!ue)
           return;
         const x = {
           x: l.x,
           y: l.y
         };
-        if (console.log("immediate-click", l, x), s) {
+        if (console.log("immediate-click", l, x), a) {
           console.log("space wqas down");
-          const p = a.toMap(x);
-          if (Y(p), lockG && a.graphics.removeAll(), lockG = lockGraphic(p), a.graphics.add(lockG), e.visible()) {
+          const p = s.toMap(x);
+          if (Y(p), lockG && s.graphics.removeAll(), lockG = lockGraphic(p), s.graphics.add(lockG), e.visible()) {
             const N = bearing(L.geometry, p);
             e.facing(N);
           }
         } else
-          a.hitTest(x).then((p) => {
+          s.hitTest(x).then((p) => {
             if (p.results && p.results.length > 0)
               for (var N = 0; N < p.results.length; N++) {
                 const y = p.results[N].graphic, T = Ae(y);
@@ -361,16 +361,16 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
                 }
               }
           });
-      }), h = e.facing((l) => {
+      }), f = e.facing((l) => {
         z(l, null, null, null, e.horizon());
       }), J = e.horizon((l) => {
         z(e.facing(), null, null, null, l);
       });
       const m = new URLSearchParams(window.location.hash.substr(1)), V = m.get("center");
-      V && V !== "null" && (a.center = JSON.parse(V));
+      V && V !== "null" && (s.center = JSON.parse(V));
       const G = m.get("zoom");
-      G && G !== "null" && (a.zoom = JSON.parse(G));
-      const k = a.camera.clone(), B = m.get("camLat");
+      G && G !== "null" && (s.zoom = JSON.parse(G));
+      const k = s.camera.clone(), B = m.get("camLat");
       B && B !== "null" && (k.position.latitude = JSON.parse(B));
       const P = m.get("camLng");
       P && P !== "null" && (k.position.longitude = JSON.parse(P));
@@ -381,7 +381,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
       const U = m.get("camTilt");
       U && U !== "null" && (k.tilt = JSON.parse(U));
       const C = m.get("camFov");
-      C && C !== "null" && (k.fov = JSON.parse(C)), a.goTo(k, { animate: !1 });
+      C && C !== "null" && (k.fov = JSON.parse(C)), s.goTo(k, { animate: !1 });
       const R = m.get("marker");
       if (R) {
         const l = JSON.parse(R);
@@ -390,7 +390,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
           z(e.facing(), x, p);
         }
       }
-      E.watch(() => a.scale, ve), ve(a.scale), E.watch(() => a.center, Ne), E.watch(() => a.camera.position, Te), e.shot((l) => {
+      E.watch(() => s.scale, ve), ve(s.scale), E.watch(() => s.center, Ne), E.watch(() => s.camera.position, Te), e.shot((l) => {
         const x = parseInt(
           typeof l == "object" && l !== null ? l.id : l
         );
@@ -417,7 +417,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
         definitionExpression: "mod(id,100) = 0"
         // start with agressive simplifaction - view should get scale change early on to override this
       });
-      a.map.add(V), V.when((B) => {
+      s.map.add(V), V.when((B) => {
         const P = B.fields, F = P.find((l) => ge(l, "filenames")), j = P.find((l) => ge(l, "calibration"));
         d.push({
           layer: V,
@@ -441,7 +441,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
         }, C = Object.keys(U), R = {};
         for (let l = 0; l < C.length; l++)
           R[C[l]] = parseFloat(B.fullExtent[C[l]]) + U[C[l]];
-        a.extent = R;
+        s.extent = R;
       });
       const G = `${Q}/1`;
       console.log("points features url is", G);
@@ -463,7 +463,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
           ]
         }
       });
-      a.map.add(k);
+      s.map.add(k);
     }
     g = new v({
       title: "GeoCam Field of View",
@@ -471,7 +471,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
       spatialReference: {
         wkid: 4326
       }
-    }), a.map.layers.add(g);
+    }), s.map.layers.add(g);
     var w = function(m) {
       switch (m.key, m.key) {
         case "Escape": {
@@ -479,17 +479,17 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, s) => o[s]), S = (t,
           break;
         }
         case " ":
-          s = !0;
+          a = !0;
       }
     }, A = function(m) {
       switch (m.key, m.key) {
         case " ":
-          s = !1;
+          a = !1;
       }
     };
     document.addEventListener("keydown", w), document.addEventListener("keyup", A);
   }, this.destroy = function() {
-    h(), J(), M(), D(), Ee(), Ce(), ee(), a.map.removeLayer(g), e.wrapper.removeChild(q), e.wrapper.removeChild(O);
+    f(), J(), M(), D(), Ee(), Ce(), ee(), s.map.removeLayer(g), e.wrapper.removeChild(q), e.wrapper.removeChild(O);
   };
 };
 class Ye extends HTMLElement {
@@ -501,12 +501,16 @@ class Ye extends HTMLElement {
       console.log("linking to ", o);
       const e = this.getAttribute("src");
       e || console.warn("No src attribute on geocam-viewer-arcgis-scene");
-      const s = this.parentNode;
-      if (this.viewer = s.viewer, this.sceneView = o, this.viewer && this.viewer.plugin) {
+      const a = this.parentNode;
+      if (this.viewer = a.viewer, this.sceneView = o, this.viewer && this.viewer.plugin) {
         const d = document.getElementsByTagName(
           "geocam-viewer-prev-next-control"
         )[0], g = d && d.plugin;
-        this.plugin = new De({ sceneView: o, prevNextPlugin: g, src: e }), s.viewer.plugin(this.plugin);
+        this.plugin = new De({ sceneView: o, prevNextPlugin: g, src: e }), a.viewer.plugin(this.plugin);
+        const f = a.getElementsByTagName(
+          "geocam-viewer-screen-shot"
+        )[0];
+        f && f.plugin && f.plugin.arcgisView(o);
       } else
         console.error("GeocamViewerArcgisScene must be a child of GeocamViewer");
     }, console.log("GeocamViewerArcgisScene connected");
