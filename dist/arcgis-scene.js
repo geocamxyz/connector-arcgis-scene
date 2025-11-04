@@ -330,8 +330,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
       s.on("clickable", (l) => {
         ue = l;
       }), s.on("immediate-click", (l) => {
-        if (!ue)
-          return;
+        if (!ue) return;
         const x = {
           x: l.x,
           y: l.y
