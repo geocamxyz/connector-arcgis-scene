@@ -398,7 +398,7 @@ export const arcgisScene = function (config = {}) {
       { class: "geocam-auto-brightness-span geocam-viewer-control-button" },
       " Autobrightness"
     );
-    abCheckbox.disabled = true;
+    // abCheckbox.disabled = true;
     abCheckbox.checked = autoBrightness();
     abCheckbox.addEventListener("change", () => {
       autoBrightness(abCheckbox.checked);
@@ -606,11 +606,18 @@ export const arcgisScene = function (config = {}) {
           capture: "capture",
         });
 
+// unlike map view it seems if we don't set an extent the scene starts on globe view with no default location
+// then if we use the layer full extent it is too zoomed in for some reason
+// so we need to add the buffer and this seems to work on a test scene but not sure if it needs to be some
+// proportion of extent.
+
+        const buf = 0.0003
+
         const buffer = {
-          xmin: -0.005,
-          ymin: -0.005,
-          xmax: 0.005,
-          ymax: 0.005,
+          xmin: -buf,
+          ymin: -buf,
+          xmax: buf,
+          ymax: buf,
         };
         const props = Object.keys(buffer);
         const extent = {};
