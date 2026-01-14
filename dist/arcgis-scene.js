@@ -53,10 +53,10 @@ function Ue(t) {
 function be(t, o, e) {
   var a;
   e && (a = Je(t, e));
-  var d = function() {
-    o(t), t.removeEventListener("load", d, !1), a && t.removeEventListener("error", a, !1);
+  var u = function() {
+    o(t), t.removeEventListener("load", u, !1), a && t.removeEventListener("error", a, !1);
   };
-  t.addEventListener("load", d, !1);
+  t.addEventListener("load", u, !1);
 }
 function Je(t, o) {
   var e = function(a) {
@@ -74,27 +74,27 @@ function W() {
 function qe(t) {
   t === void 0 && (t = {});
   var o = {};
-  [Fe, t].forEach(function(d) {
-    for (var g in d)
-      Object.prototype.hasOwnProperty.call(d, g) && (o[g] = d[g]);
+  [Fe, t].forEach(function(u) {
+    for (var m in u)
+      Object.prototype.hasOwnProperty.call(u, m) && (o[m] = u[m]);
   });
   var e = o.version, a = o.url || ke(e);
-  return new ye.Promise(function(d, g) {
-    var f = Se();
-    if (f) {
-      var J = f.getAttribute("src");
-      J !== a ? g(new Error("The ArcGIS API for JavaScript is already loaded (".concat(J, ")."))) : W() ? d(f) : be(f, d, g);
+  return new ye.Promise(function(u, m) {
+    var h = Se();
+    if (h) {
+      var J = h.getAttribute("src");
+      J !== a ? m(new Error("The ArcGIS API for JavaScript is already loaded (".concat(J, ")."))) : W() ? u(h) : be(h, u, m);
     } else if (W())
-      g(new Error("The ArcGIS API for JavaScript is already loaded."));
+      m(new Error("The ArcGIS API for JavaScript is already loaded."));
     else {
-      var M = o.css;
-      if (M) {
-        var D = M === !0;
-        Pe(D ? e : M, o.insertCssBefore);
+      var H = o.css;
+      if (H) {
+        var D = H === !0;
+        Pe(D ? e : H, o.insertCssBefore);
       }
-      f = Ue(a), be(f, function() {
-        f.setAttribute("data-esri-loader", "loaded"), d(f);
-      }, g), document.body.appendChild(f);
+      h = Ue(a), be(h, function() {
+        h.setAttribute("data-esri-loader", "loaded"), u(h);
+      }, m), document.body.appendChild(h);
     }
   });
 }
@@ -102,9 +102,9 @@ function we(t) {
   return new ye.Promise(function(o, e) {
     var a = window.require.on("error", e);
     window.require(t, function() {
-      for (var d = [], g = 0; g < arguments.length; g++)
-        d[g] = arguments[g];
-      a.remove(), o(d);
+      for (var u = [], m = 0; m < arguments.length; m++)
+        u[m] = arguments[m];
+      a.remove(), o(u);
     });
   });
 }
@@ -118,8 +118,8 @@ function Oe(t, o) {
 }
 const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t, o = {}, e = "") => {
   const a = document.createElement(t);
-  for (let d in o)
-    a.setAttribute(d, o[d]);
+  for (let u in o)
+    a.setAttribute(u, o[u]);
   return a.innerHTML = e, a;
 }, Re = (t, o) => (document.getElementById(t) || document.getElementsByTagName("head")[0].prepend(S("STYLE", { type: "text/css" }, o)), !0), De = function(t = {}) {
   Re("geocam-argis-map", `
@@ -150,8 +150,8 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
       }
 
     `);
-  let e, a, d = [], g, f, J, M, D, ee, q, H, O, I, te, $, oe, Y, ne, re, ae, se, ie, ce, Ee, le, Ce, ue = !0, de;
-  const { sceneView: s, prevNextPlugin: K, widgets: _e, expands: Ke, src: Q } = t, me = function(n, i, c, r, u) {
+  let e, a, u = [], m, h, J, H, D, ee, q, I, O, $, te, j, oe, Y, ne, re, ae, se, ie, ce, Ee, le, Ce, ue = !0, de;
+  const { sceneView: s, prevNextPlugin: K, widgets: _e, expands: Ke, src: Q } = t, me = function(n, i, c, r, l) {
     return 1 / Math.sqrt(s.scale / 70), {
       geometry: {
         type: "point",
@@ -175,7 +175,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
               primitive: "cone"
             },
             roll: 0,
-            tilt: u,
+            tilt: l,
             heading: n,
             material: {
               color: "rgba(0,0,255,0.6)"
@@ -185,24 +185,24 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
       }
     };
   };
-  let L = me(0, 0, 0, 0, 90);
-  const z = function(n, i, c, r, u) {
-    if (console.log("update fov", n, i, c, r, u), g && (g.removeAll(), e.visible() && n !== null))
-      if (H()) {
-        const h = s.camera.clone();
-        (c || c === 0) && (h.position.latitude = c), (i || i === 0) && (h.position.longitude = i), (r || r === 0) && (h.position.z = r), (n || n === 0) && (h.heading = n), (u || u === 0) && (h.tilt = 90 - u), h.fov = parseInt(e.fov()), console.log("camera fov", h), s.goTo(h, { animate: !1 }), s.camera.fov = e.fov();
+  let x = me(0, 0, 0, 0, 90);
+  const z = function(n, i, c, r, l) {
+    if (console.log("update fov", n, i, c, r, l), m && (m.removeAll(), e.visible() && n !== null))
+      if (I()) {
+        const p = s.camera.clone();
+        (c || c === 0) && (p.position.latitude = c), (i || i === 0) && (p.position.longitude = i), (r || r === 0) && (p.position.z = r), (n || n === 0) && (p.heading = n), (l || l === 0) && (p.tilt = 90 - l), p.fov = parseInt(e.fov()), console.log("camera fov", p), s.goTo(p, { animate: !1 }), s.camera.fov = e.fov();
       } else
-        L = me(
+        x = me(
           n || 0,
-          i || L.geometry.longitude,
-          c || L.geometry.latitude,
-          r || L.geometry.z,
-          u ? 90 - u : L.symbol.symbolLayers[0].tilt
-        ), g.add(L), (c || c === 0) && de([i, c]);
+          i || x.geometry.longitude,
+          c || x.geometry.latitude,
+          r || x.geometry.z,
+          l ? 90 - l : x.symbol.symbolLayers[0].tilt
+        ), m.add(x), (c || c === 0) && de([i, c]);
   }, ge = function(n, i, c = {}) {
     const r = new RegExp(i, "i");
-    let u = r.test(n.name) || r.test(n.alias);
-    return u && c.description && (u = !!n.description), u;
+    let l = r.test(n.name) || r.test(n.alias);
+    return l && c.description && (l = !!n.description), l;
   }, fe = function(n) {
     if (n) {
       var i = document.createElement("textarea");
@@ -212,44 +212,44 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
   }, ze = (n, i) => {
     const c = n.base;
     if (n.filenames)
-      return JSON.parse(i[n.filenames]).map((r) => Array.isArray(r) ? r.map((u) => /^https?:\/\//i.test(u) ? r : `${c}${u}`) : /^https?:\/\//i.test(r) ? r : `${c}${r}`);
+      return JSON.parse(i[n.filenames]).map((r) => Array.isArray(r) ? r.map((l) => /^https?:\/\//i.test(l) ? r : `${c}${l}`) : /^https?:\/\//i.test(r) ? r : `${c}${r}`);
     {
-      const r = i[n.capture].split(".")[0], u = r.split("/").pop(), h = JSON.parse(i[n.lengths]), v = JSON.parse(i[n.offsets]);
-      return h.map((b, w) => {
+      const r = i[n.capture].split(".")[0], l = r.split("/").pop(), p = JSON.parse(i[n.lengths]), b = JSON.parse(i[n.offsets]);
+      return p.map((w, y) => {
         const A = encodeURIComponent(
-          `https://s3.us-west-004.backblazeb2.com/gc-raw-surveys-archive/${r}_${w}.tar`
+          `https://s3.us-west-004.backblazeb2.com/gc-raw-surveys-archive/${r}_${y}.tar`
         );
-        return `${c}${u}/${w}/${i[n.shot]}.jpg?offset=${v[w]}&length=${b}&container=${A}`;
+        return `${c}${l}/${y}/${i[n.shot]}.jpg?offset=${b[y]}&length=${w}&container=${A}`;
       });
     }
   }, Ae = function(n) {
-    return d.findIndex((i) => i.layer == n.layer);
+    return u.findIndex((i) => i.layer == n.layer);
   }, Ve = function(n) {
     if (e.label) {
-      const { capture: i, utc_time: c, shot: r } = n, u = new Date(c);
-      e.label(`${u.toLocaleString()}`);
+      const { capture: i, utc_time: c, shot: r } = n, l = new Date(c);
+      e.label(`${l.toLocaleString()}`);
     }
   };
   let he;
   const X = function(n, i) {
     const c = Y();
     console.log("shotclick with viewlock", c);
-    const r = d[i], u = n.attributes[r.shot];
-    he = u, e.shot(u), K && (K.prev(n.attributes.prev), K.next(n.attributes.next));
-    const h = [0, 1, 2].map(
+    const r = u[i], l = n.attributes[r.shot];
+    he = l, e.shot(l), K && (K.prev(n.attributes.prev), K.next(n.attributes.next));
+    const p = [0, 1, 2].map(
       (A) => je(r.calibrationBase, {
         camera: A,
         rig_id: n.attributes[r.rigId],
         calibration: n.attributes[r.calibration]
       })
-    ), v = n.attributes[r.yaw], E = n.attributes[r.rotation], b = I() && r.brightness ? n.attributes[r.brightness] : null;
-    te = b;
-    const w = ze(r, n.attributes);
+    ), b = n.attributes[r.yaw], E = n.attributes[r.rotation], w = $() && r.brightness ? n.attributes[r.brightness] : null;
+    te = w;
+    const y = ze(r, n.attributes);
     if (c) {
       const A = bearing(n.geometry, c);
       e.facing(A);
     }
-    e.show(w, v, h, E, b), z(
+    e.show(y, b, p, E, w), z(
       e.facing(),
       n.geometry.longitude,
       n.geometry.latitude,
@@ -260,14 +260,14 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
   let pe;
   const ve = function(n, i, c, r) {
     clearTimeout(pe), pe = setTimeout(() => {
-      const h = Math.ceil(n / 500), v = s.extent, E = `${v.xmin},${v.ymin},${v.xmax},${v.ymax},${v.spatialReference.wkid}`, b = `mod(id,${h}) = 0 AND extent = ${E}`;
-      d.forEach((w) => {
-        w.layer.definitionExpression !== b && (w.layer.definitionExpression = b, console.log(
+      const p = Math.ceil(n / 500), b = s.extent, E = `${b.xmin},${b.ymin},${b.xmax},${b.ymax},${b.spatialReference.wkid}`, w = `mod(id,${p}) = 0 AND extent = ${E}`;
+      u.forEach((y) => {
+        y.layer.definitionExpression !== w && (y.layer.definitionExpression = w, console.log(
           "definition expression changed for",
-          w.layer,
-          b
+          y.layer,
+          w
         ));
-      }), oe(s.zoom), H() || z(e.facing());
+      }), oe(s.zoom), I() || z(e.facing());
     }, 500);
   }, Ne = function(n, i, c, r) {
     le([s.center.longitude, s.center.latitude]);
@@ -275,7 +275,7 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
     ne(s.camera.position.latitude), re(s.camera.position.longitude), se(s.camera.position.z), ie(s.camera.tilt), ae(s.camera.heading), ce(s.camera.fov);
   };
   this.init = async function(n) {
-    e = n, de = e.store("marker"), oe = e.store("zoom"), le = e.store("center"), ne = e.store("camLat"), re = e.store("camLng"), se = e.store("camAlt"), ie = e.store("camTilt"), ae = e.store("camHdg"), ce = e.store("camFov"), Y = e.store("viewlock"), H = e.store("autorotate"), q = S("DIV", { class: "geocam-auto-rotate" });
+    e = n, de = e.store("marker"), oe = e.store("zoom"), le = e.store("center"), ne = e.store("camLat"), re = e.store("camLng"), se = e.store("camAlt"), ie = e.store("camTilt"), ae = e.store("camHdg"), ce = e.store("camFov"), Y = e.store("viewlock"), I = e.store("autorotate"), q = S("DIV", { class: "geocam-auto-rotate" });
     const i = S("LABEL", { class: "geocam-auto-rotate-label" }), c = S("INPUT", {
       type: "checkbox",
       class: "geocam-auto-rotate-checkbox"
@@ -284,39 +284,39 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
       { class: "geocam-auto-rotate-span geocam-viewer-control-button" },
       " Autorotate"
     );
-    c.checked = H(), c.addEventListener("change", () => {
-      H(c.checked);
-    }), i.appendChild(c), i.appendChild(r), q.appendChild(i), e.addControl(q, "left-top"), M = H((m) => {
+    c.checked = I(), c.addEventListener("change", () => {
+      I(c.checked);
+    }), i.appendChild(c), i.appendChild(r), q.appendChild(i), e.addControl(q, "left-top"), H = I((d) => {
       q.setAttribute(
         "title",
-        m ? "turn auto-rotate off" : "turn auto-rotate on"
+        d ? "turn auto-rotate off" : "turn auto-rotate on"
       ), z(
         e.facing(),
-        L.geometry.longitude,
-        L.geometry.latitude,
-        L.geometry.z,
+        x.geometry.longitude,
+        x.geometry.latitude,
+        x.geometry.z,
         e.horizon()
       );
-    }), I = e.store("autobrightness"), O = S("DIV", { class: "geocam-auto-brightness" });
-    const u = S("LABEL", { class: "geocam-auto-brightness-label" });
-    $ = S("INPUT", {
+    }), $ = e.store("autobrightness"), O = S("DIV", { class: "geocam-auto-brightness" });
+    const l = S("LABEL", { class: "geocam-auto-brightness-label" });
+    j = S("INPUT", {
       type: "checkbox",
       class: "geocam-auto-brightness-checkbox"
     });
-    const h = S(
+    const p = S(
       "SPAN",
       { class: "geocam-auto-brightness-span geocam-viewer-control-button" },
       " Autobrightness"
     );
-    $.disabled = !0, $.checked = I(), $.addEventListener("change", () => {
-      I($.checked);
-    }), u.appendChild($), u.appendChild(h), O.appendChild(u), e.addControl(O, "left-top"), D = I((m) => {
+    j.checked = $(), j.addEventListener("change", () => {
+      $(j.checked);
+    }), l.appendChild(j), l.appendChild(p), O.appendChild(l), e.addControl(O, "left-top"), D = $((d) => {
       O.setAttribute(
         "title",
-        m ? "turn auto-brightness off" : "turn auto-brightness on"
-      ), e.reload(I() ? te : "[1,1,1]");
-    }), ee = e.visible((m) => z(e.facing()));
-    const [v, E, b] = await Oe(
+        d ? "turn auto-brightness off" : "turn auto-brightness on"
+      ), e.reload($() ? te : "[1,1,1]");
+    }), ee = e.visible((d) => z(e.facing()));
+    const [b, E, w] = await Oe(
       [
         "esri/layers/GraphicsLayer",
         "esri/core/reactiveUtils",
@@ -327,99 +327,99 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
       }
     );
     if (s.when(async () => {
-      s.on("clickable", (l) => {
-        ue = l;
-      }), s.on("immediate-click", (l) => {
+      s.on("clickable", (g) => {
+        ue = g;
+      }), s.on("immediate-click", (g) => {
         if (!ue)
           return;
-        const x = {
-          x: l.x,
-          y: l.y
+        const f = {
+          x: g.x,
+          y: g.y
         };
-        if (console.log("immediate-click", l, x), a) {
+        if (console.log("immediate-click", g, f), a) {
           console.log("space wqas down");
-          const p = s.toMap(x);
-          if (Y(p), lockG && s.graphics.removeAll(), lockG = lockGraphic(p), s.graphics.add(lockG), e.visible()) {
-            const N = bearing(L.geometry, p);
-            e.facing(N);
+          const v = s.toMap(f);
+          if (Y(v), lockG && s.graphics.removeAll(), lockG = lockGraphic(v), s.graphics.add(lockG), e.visible()) {
+            const T = bearing(x.geometry, v);
+            e.facing(T);
           }
         } else
-          s.hitTest(x).then((p) => {
-            if (p.results && p.results.length > 0)
-              for (var N = 0; N < p.results.length; N++) {
-                const y = p.results[N].graphic, T = Ae(y);
-                if (T >= 0) {
-                  Object.entries(y.attributes).length < 2 ? y.layer.queryFeatures({
-                    objectIds: [y.attributes.id],
+          s.hitTest(f).then((v) => {
+            if (v.results && v.results.length > 0)
+              for (var T = 0; T < v.results.length; T++) {
+                const L = v.results[T].graphic, M = Ae(L);
+                if (M >= 0) {
+                  Object.entries(L.attributes).length < 2 ? L.layer.queryFeatures({
+                    objectIds: [L.attributes.id],
                     returnGeometry: !0,
                     outFields: "*",
-                    where: y.layer.definitionExpression
+                    where: L.layer.definitionExpression
                   }).then((_) => {
-                    _.features.length > 0 && X(_.features[0], T);
-                  }) : X(y, T);
+                    _.features.length > 0 && X(_.features[0], M);
+                  }) : X(L, M);
                   break;
                 }
               }
           });
-      }), f = e.facing((l) => {
-        z(l, null, null, null, e.horizon());
-      }), J = e.horizon((l) => {
-        z(e.facing(), null, null, null, l);
+      }), h = e.facing((g) => {
+        z(g, null, null, null, e.horizon());
+      }), J = e.horizon((g) => {
+        z(e.facing(), null, null, null, g);
       });
-      const m = new URLSearchParams(window.location.hash.substr(1)), V = m.get("center");
+      const d = new URLSearchParams(window.location.hash.substr(1)), V = d.get("center");
       V && V !== "null" && (s.center = JSON.parse(V));
-      const G = m.get("zoom");
+      const G = d.get("zoom");
       G && G !== "null" && (s.zoom = JSON.parse(G));
-      const k = s.camera.clone(), B = m.get("camLat");
+      const k = s.camera.clone(), B = d.get("camLat");
       B && B !== "null" && (k.position.latitude = JSON.parse(B));
-      const P = m.get("camLng");
+      const P = d.get("camLng");
       P && P !== "null" && (k.position.longitude = JSON.parse(P));
-      const F = m.get("camAlt");
+      const F = d.get("camAlt");
       F && F !== "null" && (k.position.z = JSON.parse(F));
-      const j = m.get("camHdg");
-      j && j !== "null" && (k.heading = JSON.parse(j));
-      const U = m.get("camTilt");
-      U && U !== "null" && (k.tilt = JSON.parse(U));
-      const C = m.get("camFov");
-      C && C !== "null" && (k.fov = JSON.parse(C)), s.goTo(k, { animate: !1 });
-      const R = m.get("marker");
-      if (R) {
-        const l = JSON.parse(R);
-        if (l) {
-          const [x, p] = l;
-          z(e.facing(), x, p);
+      const R = d.get("camHdg");
+      R && R !== "null" && (k.heading = JSON.parse(R));
+      const C = d.get("camTilt");
+      C && C !== "null" && (k.tilt = JSON.parse(C));
+      const U = d.get("camFov");
+      U && U !== "null" && (k.fov = JSON.parse(U)), s.goTo(k, { animate: !1 });
+      const N = d.get("marker");
+      if (N) {
+        const g = JSON.parse(N);
+        if (g) {
+          const [f, v] = g;
+          z(e.facing(), f, v);
         }
       }
-      E.watch(() => s.scale, ve), ve(s.scale), E.watch(() => s.center, Ne), E.watch(() => s.camera.position, Te), e.shot((l) => {
-        const x = parseInt(
-          typeof l == "object" && l !== null ? l.id : l
+      E.watch(() => s.scale, ve), ve(s.scale), E.watch(() => s.center, Ne), E.watch(() => s.camera.position, Te), e.shot((g) => {
+        const f = parseInt(
+          typeof g == "object" && g !== null ? g.id : g
         );
-        x && x !== he ? (console.log("Got shot", l, "layers", d.length), d.forEach((p, N) => {
-          const y = p.layer;
-          e.resetProgress(), console.log("Querying layer for shot", y, x), y.queryFeatures({
-            objectIds: [x],
+        f && f !== he ? (console.log("Got shot", g, "layers", u.length), u.forEach((v, T) => {
+          const L = v.layer;
+          e.resetProgress(), console.log("Querying layer for shot", L, f), L.queryFeatures({
+            objectIds: [f],
             returnGeometry: !0,
             outFields: "*",
-            where: y.definitionExpression
-          }).then((T) => {
-            if (console.log("Got results for layer", y, T), T.features.length > 0) {
-              const _ = T.features[0];
-              X(_, N);
+            where: L.definitionExpression
+          }).then((M) => {
+            if (console.log("Got results for layer", L, M), M.features.length > 0) {
+              const _ = M.features[0];
+              X(_, T);
             }
           });
-        })) : l || e.hide();
+        })) : g || e.hide();
       });
     }), Q) {
-      const m = `${Q}/0`;
-      console.log("shots url is", m);
-      const V = new b({
-        url: m,
+      const d = `${Q}/0`;
+      console.log("shots url is", d);
+      const V = new w({
+        url: d,
         definitionExpression: "mod(id,100) = 0"
         // start with agressive simplifaction - view should get scale change early on to override this
       });
       s.map.add(V), V.when((B) => {
-        const P = B.fields, F = P.find((l) => ge(l, "filenames")), j = P.find((l) => ge(l, "calibration"));
-        d.push({
+        const P = B.fields, F = P.find((f) => ge(f, "filenames")), R = P.find((f) => ge(f, "calibration"));
+        u.push({
           layer: V,
           shot: "id",
           filenames: "filenames",
@@ -430,22 +430,22 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
           base: fe(F && F.description),
           calibration: "calibration",
           rigId: null,
-          calibrationBase: fe(j.description),
+          calibrationBase: fe(R.description),
           capture: "capture"
         });
-        const U = {
-          xmin: -5e-3,
-          ymin: -5e-3,
-          xmax: 5e-3,
-          ymax: 5e-3
-        }, C = Object.keys(U), R = {};
-        for (let l = 0; l < C.length; l++)
-          R[C[l]] = parseFloat(B.fullExtent[C[l]]) + U[C[l]];
-        s.extent = R;
+        const C = 3e-4, U = {
+          xmin: -C,
+          ymin: -C,
+          xmax: C,
+          ymax: C
+        }, N = Object.keys(U), g = {};
+        for (let f = 0; f < N.length; f++)
+          g[N[f]] = parseFloat(B.fullExtent[N[f]]) + U[N[f]];
+        s.extent = g;
       });
       const G = `${Q}/1`;
       console.log("points features url is", G);
-      const k = new b({
+      const k = new w({
         url: G,
         popupEnabled: !0,
         popupTemplate: {
@@ -465,15 +465,15 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
       });
       s.map.add(k);
     }
-    g = new v({
+    m = new b({
       title: "GeoCam Field of View",
       geometryType: "point",
       spatialReference: {
         wkid: 4326
       }
-    }), s.map.layers.add(g);
-    var w = function(m) {
-      switch (m.key, m.key) {
+    }), s.map.layers.add(m);
+    var y = function(d) {
+      switch (d.key, d.key) {
         case "Escape": {
           Y(null), mapView.graphics.removeAll();
           break;
@@ -481,15 +481,15 @@ const je = (t, o) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => o[a]), S = (t,
         case " ":
           a = !0;
       }
-    }, A = function(m) {
-      switch (m.key, m.key) {
+    }, A = function(d) {
+      switch (d.key, d.key) {
         case " ":
           a = !1;
       }
     };
-    document.addEventListener("keydown", w), document.addEventListener("keyup", A);
+    document.addEventListener("keydown", y), document.addEventListener("keyup", A);
   }, this.destroy = function() {
-    f(), J(), M(), D(), Ee(), Ce(), ee(), s.map.removeLayer(g), e.wrapper.removeChild(q), e.wrapper.removeChild(O);
+    h(), J(), H(), D(), Ee(), Ce(), ee(), s.map.removeLayer(m), e.wrapper.removeChild(q), e.wrapper.removeChild(O);
   };
 };
 class Ye extends HTMLElement {
@@ -503,14 +503,14 @@ class Ye extends HTMLElement {
       e || console.warn("No src attribute on geocam-viewer-arcgis-scene");
       const a = this.parentNode;
       if (this.viewer = a.viewer, this.sceneView = o, this.viewer && this.viewer.plugin) {
-        const d = document.getElementsByTagName(
+        const u = document.getElementsByTagName(
           "geocam-viewer-prev-next-control"
-        )[0], g = d && d.plugin;
-        this.plugin = new De({ sceneView: o, prevNextPlugin: g, src: e }), a.viewer.plugin(this.plugin);
-        const f = a.getElementsByTagName(
+        )[0], m = u && u.plugin;
+        this.plugin = new De({ sceneView: o, prevNextPlugin: m, src: e }), a.viewer.plugin(this.plugin);
+        const h = a.getElementsByTagName(
           "geocam-viewer-screen-shot"
         )[0];
-        f && f.plugin && f.plugin.arcgisView(o);
+        h && h.plugin && h.plugin.arcgisView(o);
       } else
         console.error("GeocamViewerArcgisScene must be a child of GeocamViewer");
     }, console.log("GeocamViewerArcgisScene connected");
