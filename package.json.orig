@@ -1,0 +1,19 @@
+{
+  "name": "arcgis-scene",
+  "private": true,
+<<<<<<< HEAD
+  "version": "2.0.4rc5",
+=======
+  "version": "2.4.0rc3",
+>>>>>>> 2465b1470983aaf48a87e3be860347bacfe16c9c
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^4.0.4"
+  },
+  "dependencies": {
+    "esri-loader": "^3.4.0"
+  }
+}
