@@ -2,10 +2,10 @@
   "name": "arcgis-scene",
   "private": true,
 <<<<<<< HEAD
-  "version": "2.0.4rc5",
+  "version": "2.4.6",
 =======
-  "version": "2.4.0rc3",
->>>>>>> 2465b1470983aaf48a87e3be860347bacfe16c9c
+  "version": "2.4.7",
+>>>>>>> 7d7cbc5b9c83d93316fc553619662c9eb39e172b
   "type": "module",
   "scripts": {
     "build": "vite build"
