@@ -3,6 +3,55 @@ import { loadModules } from "esri-loader";
 const objectUrl = (base, obj) =>
   base.replace(/\(\?\<(.+?)\>[^)]*\)/g, (x, g) => obj[g]);
 
+// --- basemap URL state -------------------------------------------------------
+//
+// A Basemap's own `id` is stable only for Esri's well-known basemaps ("satellite",
+// "topo-vector", …). One backed by a portal item gets a generated per-session id
+// like "1a1ccad3fa1-basemap-27", which means nothing on the next load — and every
+// entry in the BasemapGallery's default PortalBasemapsSource is a portal item, so
+// that is the common case, not the exotic one. Only `portalItem.id` survives, so
+// prefer it and tag it `item:` to record which kind it is.
+// Returns null for a basemap that cannot be named in a way that survives a reload,
+// which is the signal to leave it out of the URL entirely.
+const serializeBasemap = function (Basemap, basemap) {
+  if (!basemap) return null;
+  const portalItemId = basemap.portalItem && basemap.portalItem.id;
+  if (portalItemId) return `item:${portalItemId}`;
+  // A web scene can inline its basemap rather than reference one: no portalItem,
+  // and an `id` generated per session like "1a1c4355c90-basemap-2". Publishing that
+  // would put a token in the URL that resolves to nothing next load — and warns on
+  // the way past. fromId is the cheap test for "is this a real well-known id".
+  if (!Basemap || !basemap.id) return null;
+  return Basemap.fromId(basemap.id) ? basemap.id : null;
+};
+
+// Resolves to a loaded Basemap, or null if the value names nothing real — the
+// caller then leaves the current basemap alone rather than blanking the scene.
+const basemapFromRef = async function (Basemap, value, logPrefix) {
+  if (!value) return null;
+  if (value.startsWith("item:")) {
+    const basemap = new Basemap({ portalItem: { id: value.slice(5) } });
+    try {
+      await basemap.load();
+      return basemap;
+    } catch (e) {
+      console.warn(
+        `${logPrefix}: basemap portal item "${value.slice(5)}" from the URL could not be loaded, keeping the current basemap`,
+        e
+      );
+      return null;
+    }
+  }
+  // fromId returns null for anything it does not recognise; it does not throw.
+  const basemap = Basemap.fromId(value);
+  if (!basemap) {
+    console.warn(
+      `${logPrefix}: unknown basemap "${value}" in the URL, keeping the current basemap`
+    );
+  }
+  return basemap;
+};
+
 const node = (name, attrs = {}, content = "") => {
   const node = document.createElement(name);
   for (let i in attrs) {
@@ -81,6 +130,9 @@ export const arcgisScene = function (config = {}) {
     unsubZoom,
     centerStore,
     unsubCenter,
+    basemapStore,
+    unsubBasemap,
+    esriBasemap,
     clickable = true,
     fovMarkerStore;
 
@@ -328,6 +380,21 @@ export const arcgisScene = function (config = {}) {
     centerStore([sceneView.center.longitude, sceneView.center.latitude]);
   };
 
+  const basemapChange = function (newValue) {
+    const ref = serializeBasemap(esriBasemap, newValue);
+    if (ref) basemapStore(ref);
+  };
+
+  // Store -> scene. The equality check is what stops this chasing its own tail: a
+  // gallery pick writes the store, which calls back here, and without it we would
+  // rebuild and reload an identical basemap (a visible flicker) every time.
+  const applyBasemap = async function (ref) {
+    if (!ref || !esriBasemap) return;
+    if (ref === serializeBasemap(esriBasemap, sceneView.map.basemap)) return;
+    const basemap = await basemapFromRef(esriBasemap, ref, "arcgis-scene");
+    if (basemap) sceneView.map.basemap = basemap;
+  };
+
   const cameraChange = function (newValue, oldValue, propertyName, target) {
     camLatStore(sceneView.camera.position.latitude);
     camLngStore(sceneView.camera.position.longitude);
@@ -342,6 +409,7 @@ export const arcgisScene = function (config = {}) {
     fovMarkerStore = viewer.store("marker");
     zoomStore = viewer.store("zoom");
     centerStore = viewer.store("center");
+    basemapStore = viewer.store("basemap");
     camLatStore = viewer.store("camLat");
     camLngStore = viewer.store("camLng");
     camAltStore = viewer.store("camAlt");
@@ -417,16 +485,19 @@ export const arcgisScene = function (config = {}) {
     });
     unsubVisible = viewer.visible((v) => updateFov(viewer.facing()));
 
-    const [GraphicsLayer, watchUtils, FeatureLayer] = await loadModules(
-      [
-        "esri/layers/GraphicsLayer",
-        "esri/core/reactiveUtils",
-        "esri/layers/FeatureLayer",
-      ],
-      {
-        version: "4.26",
-      }
-    );
+    const [GraphicsLayer, watchUtils, FeatureLayer, Basemap] =
+      await loadModules(
+        [
+          "esri/layers/GraphicsLayer",
+          "esri/core/reactiveUtils",
+          "esri/layers/FeatureLayer",
+          "esri/Basemap",
+        ],
+        {
+          version: "4.26",
+        }
+      );
+    esriBasemap = Basemap;
 
     sceneView.when(async () => {
       sceneView.on("clickable", (e) => {
@@ -539,6 +610,21 @@ export const arcgisScene = function (config = {}) {
           updateFov(viewer.facing(), lng, lat);
         }
       }
+
+      // Basemap is driven off its store rather than read once from the hash the way
+      // zoom and center are, because Back/forward has to work: url-fragments writes
+      // the store on popstate and hashchange, and a one-shot read would leave the
+      // scene on whatever it happened to be showing. Subscribing fires immediately
+      // with whatever the URL put there, so this covers the initial load too — by
+      // which point we are inside sceneView.when, so the web scene's own basemap has
+      // already loaded and assigning over it is the override, not a race.
+      unsubBasemap = basemapStore(applyBasemap);
+      // Nothing in the URL: publish what the scene came up with, so a link copied
+      // without ever opening the gallery still carries it.
+      if (!basemapStore()) basemapChange(sceneView.map.basemap);
+      // The gallery swaps the whole basemap object on the scene, so watch the
+      // reference itself. Ground/terrain is deliberately left alone (geocam-pm#286).
+      watchUtils.watch(() => sceneView.map.basemap, basemapChange);
 
       watchUtils.watch(() => sceneView.scale, scaleChange);
       scaleChange(sceneView.scale);
@@ -688,6 +774,7 @@ export const arcgisScene = function (config = {}) {
     unsubAutobrightness();
     unsubZoom();
     unsubCenter();
+    if (unsubBasemap) unsubBasemap();
     unsubVisible();
     sceneView.map.removeLayer(fovLayer);
     viewer.wrapper.removeChild(autoRotateElement);
