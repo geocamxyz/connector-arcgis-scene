@@ -1,131 +1,131 @@
-var Ue = typeof window < "u";
-const Ce = {
-  Promise: Ue ? window.Promise : void 0
+var je = typeof window < "u";
+const Me = {
+  Promise: je ? window.Promise : void 0
 };
-var ze = "4.25", te = "next";
-function Ae(t) {
-  if (t.toLowerCase() === te)
-    return te;
+var Ae = "4.25", ne = "next";
+function ze(t) {
+  if (t.toLowerCase() === ne)
+    return ne;
   var n = t && t.match(/^(\d)\.(\d+)/);
   return n && {
     major: parseInt(n[1], 10),
     minor: parseInt(n[2], 10)
   };
 }
-function Ve(t) {
-  return t === void 0 && (t = ze), "https://js.arcgis.com/".concat(t, "/");
+function Ie(t) {
+  return t === void 0 && (t = Ae), "https://js.arcgis.com/".concat(t, "/");
 }
-function Pe(t) {
-  t === void 0 && (t = ze);
-  var n = Ve(t), e = Ae(t);
-  if (e !== te && e.major === 3) {
-    var a = e.minor <= 10 ? "js/" : "";
-    return "".concat(n).concat(a, "esri/css/esri.css");
+function Oe(t) {
+  t === void 0 && (t = Ae);
+  var n = Ie(t), e = ze(t);
+  if (e !== ne && e.major === 3) {
+    var c = e.minor <= 10 ? "js/" : "";
+    return "".concat(n).concat(c, "esri/css/esri.css");
   } else
     return "".concat(n, "esri/themes/light/main.css");
 }
-function Je(t) {
+function De(t) {
   var n = document.createElement("link");
   return n.rel = "stylesheet", n.href = t, n;
 }
-function qe(t, n) {
+function _e(t, n) {
   if (n) {
     var e = document.querySelector(n);
     e.parentNode.insertBefore(t, e);
   } else
     document.head.appendChild(t);
 }
-function Re(t) {
+function Ye(t) {
   return document.querySelector('link[href*="'.concat(t, '"]'));
 }
-function Oe(t) {
-  return !t || Ae(t) ? Pe(t) : t;
+function We(t) {
+  return !t || ze(t) ? Oe(t) : t;
 }
-function je(t, n) {
-  var e = Oe(t), a = Re(e);
-  return a || (a = Je(e), qe(a, n)), a;
+function Ke(t, n) {
+  var e = We(t), c = Ye(e);
+  return c || (c = De(e), _e(c, n)), c;
 }
-var De = {};
-function Ye(t) {
+var Qe = {};
+function Xe(t) {
   var n = document.createElement("script");
   return n.type = "text/javascript", n.src = t, n.setAttribute("data-esri-loader", "loading"), n;
 }
-function xe(t, n, e) {
-  var a;
-  e && (a = _e(t, e));
-  var l = function() {
-    n(t), t.removeEventListener("load", l, !1), a && t.removeEventListener("error", a, !1);
+function Se(t, n, e) {
+  var c;
+  e && (c = Ze(t, e));
+  var u = function() {
+    n(t), t.removeEventListener("load", u, !1), c && t.removeEventListener("error", c, !1);
   };
-  t.addEventListener("load", l, !1);
+  t.addEventListener("load", u, !1);
 }
-function _e(t, n) {
-  var e = function(a) {
-    n(a.error || new Error("There was an error attempting to load ".concat(t.src))), t.removeEventListener("error", e, !1);
+function Ze(t, n) {
+  var e = function(c) {
+    n(c.error || new Error("There was an error attempting to load ".concat(t.src))), t.removeEventListener("error", e, !1);
   };
   return t.addEventListener("error", e, !1), e;
 }
-function Ne() {
+function Ve() {
   return document.querySelector("script[data-esri-loader]");
 }
-function ne() {
+function oe() {
   var t = window.require;
   return t && t.on;
 }
-function Ke(t) {
+function et(t) {
   t === void 0 && (t = {});
   var n = {};
-  [De, t].forEach(function(l) {
-    for (var d in l)
-      Object.prototype.hasOwnProperty.call(l, d) && (n[d] = l[d]);
+  [Qe, t].forEach(function(u) {
+    for (var d in u)
+      Object.prototype.hasOwnProperty.call(u, d) && (n[d] = u[d]);
   });
-  var e = n.version, a = n.url || Ve(e);
-  return new Ce.Promise(function(l, d) {
-    var f = Ne();
-    if (f) {
-      var J = f.getAttribute("src");
-      J !== a ? d(new Error("The ArcGIS API for JavaScript is already loaded (".concat(J, ")."))) : ne() ? l(f) : xe(f, l, d);
-    } else if (ne())
+  var e = n.version, c = n.url || Ie(e);
+  return new Me.Promise(function(u, d) {
+    var h = Ve();
+    if (h) {
+      var R = h.getAttribute("src");
+      R !== c ? d(new Error("The ArcGIS API for JavaScript is already loaded (".concat(R, ")."))) : oe() ? u(h) : Se(h, u, d);
+    } else if (oe())
       d(new Error("The ArcGIS API for JavaScript is already loaded."));
     else {
-      var T = n.css;
-      if (T) {
-        var Y = T === !0;
-        je(Y ? e : T, n.insertCssBefore);
+      var N = n.css;
+      if (N) {
+        var _ = N === !0;
+        Ke(_ ? e : N, n.insertCssBefore);
       }
-      f = Ye(a), xe(f, function() {
-        f.setAttribute("data-esri-loader", "loaded"), l(f);
-      }, d), document.body.appendChild(f);
+      h = Xe(c), Se(h, function() {
+        h.setAttribute("data-esri-loader", "loaded"), u(h);
+      }, d), document.body.appendChild(h);
     }
   });
 }
-function Se(t) {
-  return new Ce.Promise(function(n, e) {
-    var a = window.require.on("error", e);
+function Ee(t) {
+  return new Me.Promise(function(n, e) {
+    var c = window.require.on("error", e);
     window.require(t, function() {
-      for (var l = [], d = 0; d < arguments.length; d++)
-        l[d] = arguments[d];
-      a.remove(), n(l);
+      for (var u = [], d = 0; d < arguments.length; d++)
+        u[d] = arguments[d];
+      c.remove(), n(u);
     });
   });
 }
-function Qe(t, n) {
-  if (n === void 0 && (n = {}), ne())
-    return Se(t);
-  var e = Ne(), a = e && e.getAttribute("src");
-  return !n.url && a && (n.url = a), Ke(n).then(function() {
-    return Se(t);
+function tt(t, n) {
+  if (n === void 0 && (n = {}), oe())
+    return Ee(t);
+  var e = Ve(), c = e && e.getAttribute("src");
+  return !n.url && c && (n.url = c), et(n).then(function() {
+    return Ee(t);
   });
 }
-const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = function(t, n) {
+const nt = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, c) => n[c]), Ce = function(t, n) {
   if (!n) return null;
   const e = n.portalItem && n.portalItem.id;
   return e ? `item:${e}` : !t || !n.id ? null : t.fromId(n.id) ? n.id : null;
-}, Xe = async function(t, n, e) {
+}, ot = async function(t, n, e) {
   if (!n) return null;
   if (n.startsWith("item:")) {
-    const l = new t({ portalItem: { id: n.slice(5) } });
+    const u = new t({ portalItem: { id: n.slice(5) } });
     try {
-      return await l.load(), l;
+      return await u.load(), u;
     } catch (d) {
       return console.warn(
         `${e}: basemap portal item "${n.slice(5)}" from the URL could not be loaded, keeping the current basemap`,
@@ -133,17 +133,17 @@ const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = fu
       ), null;
     }
   }
-  const a = t.fromId(n);
-  return a || console.warn(
+  const c = t.fromId(n);
+  return c || console.warn(
     `${e}: unknown basemap "${n}" in the URL, keeping the current basemap`
-  ), a;
-}, E = (t, n = {}, e = "") => {
-  const a = document.createElement(t);
-  for (let l in n)
-    a.setAttribute(l, n[l]);
-  return a.innerHTML = e, a;
-}, Ze = (t, n) => (document.getElementById(t) || document.getElementsByTagName("head")[0].prepend(E("STYLE", { type: "text/css" }, n)), !0), et = function(t = {}) {
-  Ze("geocam-argis-map", `
+  ), c;
+}, S = (t, n = {}, e = "") => {
+  const c = document.createElement(t);
+  for (let u in n)
+    c.setAttribute(u, n[u]);
+  return c.innerHTML = e, c;
+}, rt = (t, n) => (document.getElementById(t) || document.getElementsByTagName("head")[0].prepend(S("STYLE", { type: "text/css" }, n)), !0), at = function(t = {}) {
+  rt("geocam-argis-map", `
       .geocam-auto-rotate-checkbox, .geocam-auto-brightness-checkbox {
         display: none;
       }
@@ -171,14 +171,14 @@ const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = fu
       }
 
     `);
-  let e, a, l = [], d, f, J, T, Y, oe, q, $, R, M, re, H, ae, _, se, ie, ce, le, ue, me, Ie, de, Te, K, W, O, ge = !0, fe;
-  const { sceneView: r, prevNextPlugin: X, widgets: nt, expands: ot, src: Z } = t, he = function(o, s, c, i, m) {
-    return 1 / Math.sqrt(r.scale / 70), {
+  let e, c, u = [], d, h, R, N, _, re, J, T, q, H, ae, B, se, Y, ie, ce, le, ue, me, de, Ne, ge, Te, W, Q, j, X, fe = !0, he;
+  const { sceneView: s, prevNextPlugin: Z, widgets: it, expands: ct, src: ee } = t, pe = function(o, r, i, a, l) {
+    return 1 / Math.sqrt(s.scale / 70), {
       geometry: {
         type: "point",
-        latitude: c,
-        longitude: s,
-        z: i
+        latitude: i,
+        longitude: r,
+        z: a
       },
       symbol: {
         type: "point-3d",
@@ -196,7 +196,7 @@ const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = fu
               primitive: "cone"
             },
             roll: 0,
-            tilt: m,
+            tilt: l,
             heading: o,
             material: {
               color: "rgba(0,0,255,0.6)"
@@ -206,249 +206,279 @@ const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = fu
       }
     };
   };
-  let L = he(0, 0, 0, 0, 90);
-  const z = function(o, s, c, i, m) {
-    if (console.log("update fov", o, s, c, i, m), d && (d.removeAll(), e.visible() && o !== null))
-      if ($()) {
-        const h = r.camera.clone();
-        (c || c === 0) && (h.position.latitude = c), (s || s === 0) && (h.position.longitude = s), (i || i === 0) && (h.position.z = i), (o || o === 0) && (h.heading = o), (m || m === 0) && (h.tilt = 90 - m), h.fov = parseInt(e.fov()), console.log("camera fov", h), r.goTo(h, { animate: !1 }), r.camera.fov = e.fov();
+  let L = pe(0, 0, 0, 0, 90);
+  const C = function(o, r, i, a, l) {
+    if (console.log("update fov", o, r, i, a, l), d && (d.removeAll(), e.visible() && o !== null))
+      if (T()) {
+        const f = s.camera.clone();
+        (i || i === 0) && (f.position.latitude = i), (r || r === 0) && (f.position.longitude = r), (a || a === 0) && (f.position.z = a), (o || o === 0) && (f.heading = o), (l || l === 0) && (f.tilt = 90 - l), f.fov = parseInt(e.fov()), console.log("camera fov", f), s.goTo(f, { animate: !1 }), s.camera.fov = e.fov();
       } else
-        L = he(
+        L = pe(
           o || 0,
-          s || L.geometry.longitude,
-          c || L.geometry.latitude,
-          i || L.geometry.z,
-          m ? 90 - m : L.symbol.symbolLayers[0].tilt
-        ), d.add(L), (c || c === 0) && fe([s, c]);
-  }, pe = function(o, s, c = {}) {
-    const i = new RegExp(s, "i");
-    let m = i.test(o.name) || i.test(o.alias);
-    return m && c.description && (m = !!o.description), m;
+          r || L.geometry.longitude,
+          i || L.geometry.latitude,
+          a || L.geometry.z,
+          l ? 90 - l : L.symbol.symbolLayers[0].tilt
+        ), d.add(L), (i || i === 0) && he([r, i]);
+  }, be = function(o, r, i = {}) {
+    const a = new RegExp(r, "i");
+    let l = a.test(o.name) || a.test(o.alias);
+    return l && i.description && (l = !!o.description), l;
   }, ve = function(o) {
     if (o) {
-      var s = document.createElement("textarea");
-      return s.innerHTML = o, s.value;
+      var r = document.createElement("textarea");
+      return r.innerHTML = o, r.value;
     } else
       return "https://image.geocam.xyz/";
-  }, $e = (o, s) => {
-    const c = o.base;
+  }, He = (o, r) => {
+    const i = o.base;
     if (o.filenames)
-      return JSON.parse(s[o.filenames]).map((i) => Array.isArray(i) ? i.map((m) => /^https?:\/\//i.test(m) ? i : `${c}${m}`) : /^https?:\/\//i.test(i) ? i : `${c}${i}`);
+      return JSON.parse(r[o.filenames]).map((a) => Array.isArray(a) ? a.map((l) => /^https?:\/\//i.test(l) ? a : `${i}${l}`) : /^https?:\/\//i.test(a) ? a : `${i}${a}`);
     {
-      const i = s[o.capture].split(".")[0], m = i.split("/").pop(), h = JSON.parse(s[o.lengths]), v = JSON.parse(s[o.offsets]);
-      return h.map((b, w) => {
+      const a = r[o.capture].split(".")[0], l = a.split("/").pop(), f = JSON.parse(r[o.lengths]), p = JSON.parse(r[o.offsets]);
+      return f.map((w, M) => {
         const A = encodeURIComponent(
-          `https://s3.us-west-004.backblazeb2.com/gc-raw-surveys-archive/${i}_${w}.tar`
+          `https://s3.us-west-004.backblazeb2.com/gc-raw-surveys-archive/${a}_${M}.tar`
         );
-        return `${c}${m}/${w}/${s[o.shot]}.jpg?offset=${v[w]}&length=${b}&container=${A}`;
+        return `${i}${l}/${M}/${r[o.shot]}.jpg?offset=${p[M]}&length=${w}&container=${A}`;
       });
     }
-  }, Me = function(o) {
-    return l.findIndex((s) => s.layer == o.layer);
-  }, He = function(o) {
+  }, Be = function(o) {
+    return u.findIndex((r) => r.layer == o.layer);
+  }, $e = function(o) {
     if (e.label) {
-      const { capture: s, utc_time: c, shot: i } = o, m = new Date(c);
-      e.label(`${m.toLocaleString()}`);
+      const { capture: r, utc_time: i, shot: a } = o, l = new Date(i);
+      e.label(`${l.toLocaleString()}`);
     }
   };
-  let be;
-  const ee = function(o, s) {
-    const c = _();
-    console.log("shotclick with viewlock", c);
-    const i = l[s], m = o.attributes[i.shot];
-    be = m, e.shot(m), X && (X.prev(o.attributes.prev), X.next(o.attributes.next));
-    const h = [0, 1, 2].map(
-      (A) => We(i.calibrationBase, {
+  let we;
+  const te = function(o, r) {
+    const i = Y();
+    console.log("shotclick with viewlock", i);
+    const a = u[r], l = o.attributes[a.shot];
+    we = l, e.shot(l), Z && (Z.prev(o.attributes.prev), Z.next(o.attributes.next));
+    const f = [0, 1, 2].map(
+      (A) => nt(a.calibrationBase, {
         camera: A,
-        rig_id: o.attributes[i.rigId],
-        calibration: o.attributes[i.calibration]
+        rig_id: o.attributes[a.rigId],
+        calibration: o.attributes[a.calibration]
       })
-    ), v = o.attributes[i.yaw], x = o.attributes[i.rotation], b = M() && i.brightness ? o.attributes[i.brightness] : null;
-    re = b;
-    const w = $e(i, o.attributes);
-    if (c) {
-      const A = bearing(o.geometry, c);
+    ), p = o.attributes[a.yaw], v = o.attributes[a.rotation], w = H() && a.brightness ? o.attributes[a.brightness] : null;
+    ae = w;
+    const M = He(a, o.attributes);
+    if (i) {
+      const A = bearing(o.geometry, i);
       e.facing(A);
     }
-    e.show(w, v, h, x, b), z(
+    e.show(M, p, f, v, w), C(
       e.facing(),
       o.geometry.longitude,
       o.geometry.latitude,
       o.geometry.z,
       e.horizon()
-    ), He(o.attributes);
+    ), $e(o.attributes);
   };
-  let we;
-  const ye = function(o, s, c, i) {
-    clearTimeout(we), we = setTimeout(() => {
-      const h = Math.ceil(o / 500), v = r.extent, x = `${v.xmin},${v.ymin},${v.xmax},${v.ymax},${v.spatialReference.wkid}`, b = `mod(id,${h}) = 0 AND extent = ${x}`;
-      l.forEach((w) => {
-        w.layer.definitionExpression !== b && (w.layer.definitionExpression = b, console.log(
+  let ye;
+  const Fe = 111320, Ge = 150, Ue = function() {
+    let o = null;
+    const r = s.extent;
+    if (r && isFinite(r.xmin)) {
+      const a = r.spatialReference && r.spatialReference.isWebMercator && X ? X.webMercatorToGeographic(r) : r;
+      a && isFinite(a.xmin) && (o = [a.xmin, a.ymin, a.xmax, a.ymax]);
+    }
+    const i = s.camera && s.camera.position;
+    if (i && isFinite(i.longitude) && isFinite(i.latitude)) {
+      const l = Math.max(Ge, (s.scale || 0) / 10) / Fe, f = l / Math.max(0.01, Math.cos(i.latitude * Math.PI / 180)), p = [
+        i.longitude - f,
+        i.latitude - l,
+        i.longitude + f,
+        i.latitude + l
+      ];
+      o = o ? [
+        Math.min(o[0], p[0]),
+        Math.min(o[1], p[1]),
+        Math.max(o[2], p[2]),
+        Math.max(o[3], p[3])
+      ] : p;
+    }
+    return o;
+  }, Le = function(o, r, i, a) {
+    clearTimeout(ye), ye = setTimeout(() => {
+      const l = isFinite(o) ? o : s.scale, f = Math.ceil(l / 500), p = Ue(), v = p ? `mod(id,${f}) = 0 AND extent = ${p.join(",")},4326` : `mod(id,${f}) = 0`;
+      u.forEach((w) => {
+        w.layer.definitionExpression !== v && (w.layer.definitionExpression = v, console.log(
           "definition expression changed for",
           w.layer,
-          b
+          v
         ));
-      }), ae(r.zoom), $() || z(e.facing());
+      }), se(s.zoom), T() || C(e.facing());
     }, 500);
-  }, Be = function(o, s, c, i) {
-    de([r.center.longitude, r.center.latitude]);
-  }, Le = function(o) {
-    const s = Ee(O, o);
-    s && K(s);
-  }, Ge = async function(o) {
-    if (!o || !O || o === Ee(O, r.map.basemap)) return;
-    const s = await Xe(O, o, "arcgis-scene");
-    s && (r.map.basemap = s);
-  }, Fe = function(o, s, c, i) {
-    se(r.camera.position.latitude), ie(r.camera.position.longitude), le(r.camera.position.z), ue(r.camera.tilt), ce(r.camera.heading), me(r.camera.fov);
+  }, Pe = function(o, r, i, a) {
+    ge([s.center.longitude, s.center.latitude]);
+  }, xe = function(o) {
+    const r = Ce(j, o);
+    r && W(r);
+  }, Re = async function(o) {
+    if (!o || !j || o === Ce(j, s.map.basemap)) return;
+    const r = await ot(j, o, "arcgis-scene");
+    r && (s.map.basemap = r);
+  }, Je = function(o, r, i, a) {
+    ie(s.camera.position.latitude), ce(s.camera.position.longitude), ue(s.camera.position.z), me(s.camera.tilt), le(s.camera.heading), de(s.camera.fov);
   };
   this.init = async function(o) {
-    e = o, fe = e.store("marker"), ae = e.store("zoom"), de = e.store("center"), K = e.store("basemap"), se = e.store("camLat"), ie = e.store("camLng"), le = e.store("camAlt"), ue = e.store("camTilt"), ce = e.store("camHdg"), me = e.store("camFov"), _ = e.store("viewlock"), $ = e.store("autorotate"), q = E("DIV", { class: "geocam-auto-rotate" });
-    const s = E("LABEL", { class: "geocam-auto-rotate-label" }), c = E("INPUT", {
+    e = o, he = e.store("marker"), se = e.store("zoom"), ge = e.store("center"), W = e.store("basemap"), ie = e.store("camLat"), ce = e.store("camLng"), ue = e.store("camAlt"), me = e.store("camTilt"), le = e.store("camHdg"), de = e.store("camFov"), Y = e.store("viewlock"), T = e.store("autorotate"), J = S("DIV", { class: "geocam-auto-rotate" });
+    const r = S("LABEL", { class: "geocam-auto-rotate-label" }), i = S("INPUT", {
       type: "checkbox",
       class: "geocam-auto-rotate-checkbox"
-    }), i = E(
+    }), a = S(
       "SPAN",
       { class: "geocam-auto-rotate-span geocam-viewer-control-button" },
       " Autorotate"
     );
-    c.checked = $(), c.addEventListener("change", () => {
-      $(c.checked);
-    }), s.appendChild(c), s.appendChild(i), q.appendChild(s), e.addControl(q, "left-top"), T = $((g) => {
-      q.setAttribute(
+    i.checked = T(), i.addEventListener("change", () => {
+      T(i.checked);
+    }), r.appendChild(i), r.appendChild(a), J.appendChild(r), e.addControl(J, "left-top"), N = T((g) => {
+      J.setAttribute(
         "title",
         g ? "turn auto-rotate off" : "turn auto-rotate on"
-      ), z(
+      ), C(
         e.facing(),
         L.geometry.longitude,
         L.geometry.latitude,
         L.geometry.z,
         e.horizon()
       );
-    }), M = e.store("autobrightness"), R = E("DIV", { class: "geocam-auto-brightness" });
-    const m = E("LABEL", { class: "geocam-auto-brightness-label" });
-    H = E("INPUT", {
+    }), H = e.store("autobrightness"), q = S("DIV", { class: "geocam-auto-brightness" });
+    const l = S("LABEL", { class: "geocam-auto-brightness-label" });
+    B = S("INPUT", {
       type: "checkbox",
       class: "geocam-auto-brightness-checkbox"
     });
-    const h = E(
+    const f = S(
       "SPAN",
       { class: "geocam-auto-brightness-span geocam-viewer-control-button" },
       " Autobrightness"
     );
-    H.disabled = !0, H.checked = M(), H.addEventListener("change", () => {
-      M(H.checked);
-    }), m.appendChild(H), m.appendChild(h), R.appendChild(m), e.addControl(R, "left-top"), Y = M((g) => {
-      R.setAttribute(
+    B.disabled = !0, B.checked = H(), B.addEventListener("change", () => {
+      H(B.checked);
+    }), l.appendChild(B), l.appendChild(f), q.appendChild(l), e.addControl(q, "left-top"), _ = H((g) => {
+      q.setAttribute(
         "title",
         g ? "turn auto-brightness off" : "turn auto-brightness on"
-      ), e.reload(M() ? re : "[1,1,1]");
-    }), oe = e.visible((g) => z(e.facing()));
-    const [v, x, b, w] = await Qe(
+      ), e.reload(H() ? ae : "[1,1,1]");
+    }), re = e.visible((g) => C(e.facing()));
+    const [
+      p,
+      v,
+      w,
+      M,
+      A
+    ] = await tt(
       [
         "esri/layers/GraphicsLayer",
         "esri/core/reactiveUtils",
         "esri/layers/FeatureLayer",
-        "esri/Basemap"
+        "esri/Basemap",
+        "esri/geometry/support/webMercatorUtils"
       ],
       {
         version: "4.26"
       }
     );
-    if (O = w, r.when(async () => {
-      r.on("clickable", (u) => {
-        ge = u;
-      }), r.on("immediate-click", (u) => {
-        if (!ge) return;
-        const k = {
-          x: u.x,
-          y: u.y
+    if (j = M, X = A, s.when(async () => {
+      s.on("clickable", (m) => {
+        fe = m;
+      }), s.on("immediate-click", (m) => {
+        if (!fe) return;
+        const x = {
+          x: m.x,
+          y: m.y
         };
-        if (console.log("immediate-click", u, k), a) {
+        if (console.log("immediate-click", m, x), c) {
           console.log("space wqas down");
-          const p = r.toMap(k);
-          if (_(p), lockG && r.graphics.removeAll(), lockG = lockGraphic(p), r.graphics.add(lockG), e.visible()) {
-            const N = bearing(L.geometry, p);
-            e.facing(N);
+          const b = s.toMap(x);
+          if (Y(b), lockG && s.graphics.removeAll(), lockG = lockGraphic(b), s.graphics.add(lockG), e.visible()) {
+            const I = bearing(L.geometry, b);
+            e.facing(I);
           }
         } else
-          r.hitTest(k).then((p) => {
-            if (p.results && p.results.length > 0)
-              for (var N = 0; N < p.results.length; N++) {
-                const y = p.results[N].graphic, I = Me(y);
-                if (I >= 0) {
+          s.hitTest(x).then((b) => {
+            if (b.results && b.results.length > 0)
+              for (var I = 0; I < b.results.length; I++) {
+                const y = b.results[I].graphic, V = Be(y);
+                if (V >= 0) {
                   Object.entries(y.attributes).length < 2 ? y.layer.queryFeatures({
                     objectIds: [y.attributes.id],
                     returnGeometry: !0,
                     outFields: "*",
                     where: y.layer.definitionExpression
-                  }).then((Q) => {
-                    Q.features.length > 0 && ee(Q.features[0], I);
-                  }) : ee(y, I);
+                  }).then((K) => {
+                    K.features.length > 0 && te(K.features[0], V);
+                  }) : te(y, V);
                   break;
                 }
               }
           });
-      }), f = e.facing((u) => {
-        z(u, null, null, null, e.horizon());
-      }), J = e.horizon((u) => {
-        z(e.facing(), null, null, null, u);
+      }), h = e.facing((m) => {
+        C(m, null, null, null, e.horizon());
+      }), R = e.horizon((m) => {
+        C(e.facing(), null, null, null, m);
       });
-      const g = new URLSearchParams(window.location.hash.substr(1)), V = g.get("center");
-      V && V !== "null" && (r.center = JSON.parse(V));
-      const B = g.get("zoom");
-      B && B !== "null" && (r.zoom = JSON.parse(B));
-      const S = r.camera.clone(), G = g.get("camLat");
-      G && G !== "null" && (S.position.latitude = JSON.parse(G));
-      const F = g.get("camLng");
-      F && F !== "null" && (S.position.longitude = JSON.parse(F));
+      const g = new URLSearchParams(window.location.hash.substr(1)), z = g.get("center");
+      z && z !== "null" && (s.center = JSON.parse(z));
+      const $ = g.get("zoom");
+      $ && $ !== "null" && (s.zoom = JSON.parse($));
+      const k = s.camera.clone(), F = g.get("camLat");
+      F && F !== "null" && (k.position.latitude = JSON.parse(F));
+      const G = g.get("camLng");
+      G && G !== "null" && (k.position.longitude = JSON.parse(G));
       const U = g.get("camAlt");
-      U && U !== "null" && (S.position.z = JSON.parse(U));
-      const j = g.get("camHdg");
-      j && j !== "null" && (S.heading = JSON.parse(j));
+      U && U !== "null" && (k.position.z = JSON.parse(U));
+      const O = g.get("camHdg");
+      O && O !== "null" && (k.heading = JSON.parse(O));
       const P = g.get("camTilt");
-      P && P !== "null" && (S.tilt = JSON.parse(P));
-      const C = g.get("camFov");
-      C && C !== "null" && (S.fov = JSON.parse(C)), r.goTo(S, { animate: !1 });
+      P && P !== "null" && (k.tilt = JSON.parse(P));
+      const E = g.get("camFov");
+      E && E !== "null" && (k.fov = JSON.parse(E)), s.goTo(k, { animate: !1 });
       const D = g.get("marker");
       if (D) {
-        const u = JSON.parse(D);
-        if (u) {
-          const [k, p] = u;
-          z(e.facing(), k, p);
+        const m = JSON.parse(D);
+        if (m) {
+          const [x, b] = m;
+          C(e.facing(), x, b);
         }
       }
-      W = K(Ge), K() || Le(r.map.basemap), x.watch(() => r.map.basemap, Le), x.watch(() => r.scale, ye), ye(r.scale), x.watch(() => r.center, Be), x.watch(() => r.camera.position, Fe), e.shot((u) => {
-        const k = parseInt(
-          typeof u == "object" && u !== null ? u.id : u
+      Q = W(Re), W() || xe(s.map.basemap), v.watch(() => s.map.basemap, xe), v.watch(() => s.scale, Le), Le(s.scale), v.watch(() => s.center, Pe), v.watch(() => s.camera.position, Je), e.shot((m) => {
+        const x = parseInt(
+          typeof m == "object" && m !== null ? m.id : m
         );
-        k && k !== be ? (console.log("Got shot", u, "layers", l.length), l.forEach((p, N) => {
-          const y = p.layer;
-          e.resetProgress(), console.log("Querying layer for shot", y, k), y.queryFeatures({
-            objectIds: [k],
+        x && x !== we ? (console.log("Got shot", m, "layers", u.length), u.forEach((b, I) => {
+          const y = b.layer;
+          e.resetProgress(), console.log("Querying layer for shot", y, x), y.queryFeatures({
+            objectIds: [x],
             returnGeometry: !0,
             outFields: "*",
             where: y.definitionExpression
-          }).then((I) => {
-            if (console.log("Got results for layer", y, I), I.features.length > 0) {
-              const Q = I.features[0];
-              ee(Q, N);
+          }).then((V) => {
+            if (console.log("Got results for layer", y, V), V.features.length > 0) {
+              const K = V.features[0];
+              te(K, I);
             }
           });
-        })) : u || e.hide();
+        })) : m || e.hide();
       });
-    }), Z) {
-      const g = `${Z}/0`;
+    }), ee) {
+      const g = `${ee}/0`;
       console.log("shots url is", g);
-      const V = new b({
+      const z = new w({
         url: g,
         definitionExpression: "mod(id,100) = 0"
         // start with agressive simplifaction - view should get scale change early on to override this
       });
-      r.map.add(V), V.when((G) => {
-        const F = G.fields, U = F.find((u) => pe(u, "filenames")), j = F.find((u) => pe(u, "calibration"));
-        l.push({
-          layer: V,
+      s.map.add(z), z.when((F) => {
+        const G = F.fields, U = G.find((m) => be(m, "filenames")), O = G.find((m) => be(m, "calibration"));
+        u.push({
+          layer: z,
           shot: "id",
           filenames: "filenames",
           yaw: "yaw",
@@ -458,7 +488,7 @@ const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = fu
           base: ve(U && U.description),
           calibration: "calibration",
           rigId: null,
-          calibrationBase: ve(j.description),
+          calibrationBase: ve(O.description),
           capture: "capture"
         });
         const P = {
@@ -466,15 +496,15 @@ const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = fu
           ymin: -5e-3,
           xmax: 5e-3,
           ymax: 5e-3
-        }, C = Object.keys(P), D = {};
-        for (let u = 0; u < C.length; u++)
-          D[C[u]] = parseFloat(G.fullExtent[C[u]]) + P[C[u]];
-        r.extent = D;
+        }, E = Object.keys(P), D = {};
+        for (let m = 0; m < E.length; m++)
+          D[E[m]] = parseFloat(F.fullExtent[E[m]]) + P[E[m]];
+        s.extent = D;
       });
-      const B = `${Z}/1`;
-      console.log("points features url is", B);
-      const S = new b({
-        url: B,
+      const $ = `${ee}/1`;
+      console.log("points features url is", $);
+      const k = new w({
+        url: $,
         popupEnabled: !0,
         popupTemplate: {
           title: "{reference}",
@@ -491,36 +521,36 @@ const We = (t, n) => t.replace(/\(\?\<(.+?)\>[^)]*\)/g, (e, a) => n[a]), Ee = fu
           ]
         }
       });
-      r.map.add(S);
+      s.map.add(k);
     }
-    d = new v({
+    d = new p({
       title: "GeoCam Field of View",
       geometryType: "point",
       spatialReference: {
         wkid: 4326
       }
-    }), r.map.layers.add(d);
-    var A = function(g) {
+    }), s.map.layers.add(d);
+    var ke = function(g) {
       switch (g.key, g.key) {
         case "Escape": {
-          _(null), mapView.graphics.removeAll();
+          Y(null), mapView.graphics.removeAll();
           break;
         }
         case " ":
-          a = !0;
+          c = !0;
       }
-    }, ke = function(g) {
+    }, qe = function(g) {
       switch (g.key, g.key) {
         case " ":
-          a = !1;
+          c = !1;
       }
     };
-    document.addEventListener("keydown", A), document.addEventListener("keyup", ke);
+    document.addEventListener("keydown", ke), document.addEventListener("keyup", qe);
   }, this.destroy = function() {
-    f(), J(), T(), Y(), Ie(), Te(), W && W(), oe(), r.map.removeLayer(d), e.wrapper.removeChild(q), e.wrapper.removeChild(R);
+    h(), R(), N(), _(), Ne(), Te(), Q && Q(), re(), s.map.removeLayer(d), e.wrapper.removeChild(J), e.wrapper.removeChild(q);
   };
 };
-class tt extends HTMLElement {
+class st extends HTMLElement {
   constructor() {
     super(), this.plugin = null, console.log("GeocamViewerArcgisScene init");
   }
@@ -529,16 +559,16 @@ class tt extends HTMLElement {
       console.log("linking to ", n);
       const e = this.getAttribute("src");
       e || console.warn("No src attribute on geocam-viewer-arcgis-scene");
-      const a = this.parentNode;
-      if (this.viewer = a.viewer, this.sceneView = n, this.viewer && this.viewer.plugin) {
-        const l = document.getElementsByTagName(
+      const c = this.parentNode;
+      if (this.viewer = c.viewer, this.sceneView = n, this.viewer && this.viewer.plugin) {
+        const u = document.getElementsByTagName(
           "geocam-viewer-prev-next-control"
-        )[0], d = l && l.plugin;
-        this.plugin = new et({ sceneView: n, prevNextPlugin: d, src: e }), a.viewer.plugin(this.plugin);
-        const f = a.getElementsByTagName(
+        )[0], d = u && u.plugin;
+        this.plugin = new at({ sceneView: n, prevNextPlugin: d, src: e }), c.viewer.plugin(this.plugin);
+        const h = c.getElementsByTagName(
           "geocam-viewer-screen-shot"
         )[0];
-        f && f.plugin && f.plugin.arcgisView(n);
+        h && h.plugin && h.plugin.arcgisView(n);
       } else
         console.error("GeocamViewerArcgisScene must be a child of GeocamViewer");
     }, console.log("GeocamViewerArcgisScene connected");
@@ -547,7 +577,7 @@ class tt extends HTMLElement {
     this.plugin = null, this.viewer = null, this.sceneView = null, console.log("GeocamViewerArcgisScene disconnected");
   }
 }
-window.customElements.define("geocam-viewer-arcgis-scene", tt);
+window.customElements.define("geocam-viewer-arcgis-scene", st);
 export {
-  tt as GeocamViewerArcgisScene
+  st as GeocamViewerArcgisScene
 };

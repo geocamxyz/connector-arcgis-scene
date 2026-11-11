@@ -133,6 +133,7 @@ export const arcgisScene = function (config = {}) {
     basemapStore,
     unsubBasemap,
     esriBasemap,
+    esriWebMercatorUtils,
     clickable = true,
     fovMarkerStore;
 
@@ -353,14 +354,76 @@ export const arcgisScene = function (config = {}) {
 
   let scaleChangeTimeout;
 
+  const METRES_PER_DEGREE_LAT = 111320;
+  // Floor on the camera box, so a street-level view still asks for a usable area.
+  const MIN_CAMERA_RADIUS_M = 150;
+
+  // The draw envelope, in 4326, as [xmin, ymin, xmax, ymax] — or null if we cannot
+  // work one out, in which case the caller sends the decimation alone.
+  //
+  // `sceneView.extent` is the ground footprint around the screen-centre ray. In a
+  // tilted SceneView that is NOT what the camera can see: close in at tilt ~70 the
+  // footprint lands past the shots entirely, the envelope matches nothing, and every
+  // shot disappears (geocam-pm#286). Shots sitting above the terrain push it further
+  // still. So union it with a box around the camera's own ground position, sized off
+  // the view scale, which keeps the near field covered at any tilt.
+  //
+  // Deliberately NOT replaced by "drop the envelope and thin instead": results are
+  // ordered by id and capped at the service's MAX_RECORD_COUNT, so an unbounded query
+  // on a large cell returns the lowest ids — the start of the capture rather than what
+  // is on screen. The envelope is what makes the result relevant; the decimation is
+  // what keeps it bounded. Both are needed.
+  const drawEnvelope4326 = function () {
+    let box = null;
+
+    const ext = sceneView.extent;
+    if (ext && isFinite(ext.xmin)) {
+      const geo =
+        ext.spatialReference &&
+        ext.spatialReference.isWebMercator &&
+        esriWebMercatorUtils
+          ? esriWebMercatorUtils.webMercatorToGeographic(ext)
+          : ext;
+      if (geo && isFinite(geo.xmin)) {
+        box = [geo.xmin, geo.ymin, geo.xmax, geo.ymax];
+      }
+    }
+
+    const pos = sceneView.camera && sceneView.camera.position;
+    if (pos && isFinite(pos.longitude) && isFinite(pos.latitude)) {
+      const radius = Math.max(MIN_CAMERA_RADIUS_M, (sceneView.scale || 0) / 10);
+      const dLat = radius / METRES_PER_DEGREE_LAT;
+      // cos() guarded so a near-polar camera cannot blow the longitude span up.
+      const dLon =
+        dLat / Math.max(0.01, Math.cos((pos.latitude * Math.PI) / 180));
+      const cam = [
+        pos.longitude - dLon,
+        pos.latitude - dLat,
+        pos.longitude + dLon,
+        pos.latitude + dLat,
+      ];
+      box = box
+        ? [
+            Math.min(box[0], cam[0]),
+            Math.min(box[1], cam[1]),
+            Math.max(box[2], cam[2]),
+            Math.max(box[3], cam[3]),
+          ]
+        : cam;
+    }
+
+    return box;
+  };
+
   const scaleChange = function (newValue, oldValue, propertyName, target) {
     clearTimeout(scaleChangeTimeout);
     scaleChangeTimeout = setTimeout(() => {
-      const scale = newValue;
+      const scale = isFinite(newValue) ? newValue : sceneView.scale;
       const mod = Math.ceil(scale / 500); // was 1000 - more dense dots
-      const extent = sceneView.extent;
-      const extStr = `${extent.xmin},${extent.ymin},${extent.xmax},${extent.ymax},${extent.spatialReference.wkid}`;
-      const definitionExpression = `mod(id,${mod}) = 0 AND extent = ${extStr}`;
+      const box = drawEnvelope4326();
+      const definitionExpression = box
+        ? `mod(id,${mod}) = 0 AND extent = ${box.join(",")},4326`
+        : `mod(id,${mod}) = 0`;
       geocamLayers.forEach((geocamLayer) => {
         if (geocamLayer.layer.definitionExpression !== definitionExpression) {
           geocamLayer.layer.definitionExpression = definitionExpression;
@@ -485,19 +548,26 @@ export const arcgisScene = function (config = {}) {
     });
     unsubVisible = viewer.visible((v) => updateFov(viewer.facing()));
 
-    const [GraphicsLayer, watchUtils, FeatureLayer, Basemap] =
-      await loadModules(
-        [
-          "esri/layers/GraphicsLayer",
-          "esri/core/reactiveUtils",
-          "esri/layers/FeatureLayer",
-          "esri/Basemap",
-        ],
-        {
-          version: "4.26",
-        }
-      );
+    const [
+      GraphicsLayer,
+      watchUtils,
+      FeatureLayer,
+      Basemap,
+      webMercatorUtils,
+    ] = await loadModules(
+      [
+        "esri/layers/GraphicsLayer",
+        "esri/core/reactiveUtils",
+        "esri/layers/FeatureLayer",
+        "esri/Basemap",
+        "esri/geometry/support/webMercatorUtils",
+      ],
+      {
+        version: "4.26",
+      }
+    );
     esriBasemap = Basemap;
+    esriWebMercatorUtils = webMercatorUtils;
 
     sceneView.when(async () => {
       sceneView.on("clickable", (e) => {
