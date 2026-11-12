@@ -78,6 +78,19 @@ export const arcgisScene = function (config = {}) {
         display: none;
       }
 
+      /* Ground opacity (geocam-pm#290). Laid out beside the icon rather than under
+         it so the control keeps the same height as the toggles above it. */
+      .geocam-ground-opacity-label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .geocam-ground-opacity-slider {
+        width: 80px;
+        cursor: pointer;
+      }
+
       .geocam-auto-rotate-span {
         background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' enable-background='new 0 0 24 24'  viewBox='0 0 24 24' fill='currentColor'><rect fill='none' height='24' width='24'/><path d='M7.94,5.12L6.49,3.66C8.07,2.61,9.96,2,12,2c5.52,0,10,4.48,10,10c0,2.04-0.61,3.93-1.66,5.51l-1.46-1.46 C19.59,14.86,20,13.48,20,12c0-4.41-3.59-8-8-8C10.52,4,9.14,4.41,7.94,5.12z M17.66,9.53l-1.41-1.41l-2.65,2.65l1.41,1.41 L17.66,9.53z M19.78,22.61l-2.27-2.27C15.93,21.39,14.04,22,12,22C6.48,22,2,17.52,2,12c0-2.04,0.61-3.93,1.66-5.51L1.39,4.22 l1.41-1.41l18.38,18.38L19.78,22.61z M16.06,18.88l-3.88-3.88l-1.59,1.59l-4.24-4.24l1.41-1.41l2.83,2.83l0.18-0.18L5.12,7.94 C4.41,9.14,4,10.52,4,12c0,4.41,3.59,8,8,8C13.48,20,14.86,19.59,16.06,18.88z'/></svg>")
       }
@@ -134,6 +147,10 @@ export const arcgisScene = function (config = {}) {
     unsubBasemap,
     esriBasemap,
     esriWebMercatorUtils,
+    groundStore,
+    unsubGround,
+    groundElement,
+    groundSlider,
     clickable = true,
     fovMarkerStore;
 
@@ -305,7 +322,67 @@ export const arcgisScene = function (config = {}) {
     }
   };
 
-  let lastShot, lastLayer;
+  let lastShot, lastLayer, defaultShotOpened = false;
+
+  // How many candidates to pull when choosing the shot to open on load. Enough to
+  // find one near where the camera is pointing without asking for the whole layer.
+  const DEFAULT_SHOT_CANDIDATES = 50;
+
+  const nearestToView = function (features) {
+    const centre = sceneView.center;
+    if (!centre) return features[0];
+
+    let best = features[0];
+    let bestDistance = Infinity;
+    features.forEach((feature) => {
+      const g = feature.geometry;
+      if (!g || g.longitude == null || g.latitude == null) return;
+      // Squared degrees is not a distance, but it orders candidates correctly over
+      // the span of one capture, which is all this has to do.
+      const dx = g.longitude - centre.longitude;
+      const dy = g.latitude - centre.latitude;
+      const d = dx * dx + dy * dy;
+      if (d < bestDistance) {
+        bestDistance = d;
+        best = feature;
+      }
+    });
+    return best;
+  };
+
+  // geocam-pm#291 — with no `#shot=` in the URL the 360 pane sat empty until the user
+  // found and clicked a dot, so the app opened showing nothing.
+  //
+  // An explicit `#shot=` always wins. url-fragments writes the shot store during its
+  // own init, which is well before a feature layer finishes loading, so an empty store
+  // here genuinely means "the URL named no shot" — and it is checked again when the
+  // query returns, in case one arrived while it was in flight.
+  const openDefaultShot = function (geocamLayer, index) {
+    if (defaultShotOpened || viewer.shot()) return;
+    defaultShotOpened = true;
+
+    const layer = geocamLayer.layer;
+    layer
+      .queryFeatures({
+        where: layer.definitionExpression || "1=1",
+        returnGeometry: true,
+        outFields: "*",
+        num: DEFAULT_SHOT_CANDIDATES,
+      })
+      .then((results) => {
+        const features = results && results.features;
+        if (viewer.shot() || !features || !features.length) {
+          // Let a later layer try if this one had nothing to offer.
+          if (!viewer.shot()) defaultShotOpened = false;
+          return;
+        }
+        shotClick(nearestToView(features), index);
+      })
+      .catch((e) => {
+        console.warn("arcgis-scene: could not open a default shot", e);
+        defaultShotOpened = false;
+      });
+  };
 
   const shotClick = function (graphic, shotLayerIndex) {
     const lockedTo = viewlock();
@@ -415,6 +492,48 @@ export const arcgisScene = function (config = {}) {
     return box;
   };
 
+  // --- ground transparency (geocam-pm#290) -------------------------------------
+  //
+  // Shots taken below the surface — down a manhole — are hidden by Esri's ground,
+  // which is exactly when you want to see them. Fading the ground as the camera
+  // comes in reveals them without the user having to find a setting.
+  //
+  // Scale rather than camera altitude drives it: scale is already what the draw
+  // decimation watches, it updates on the same settled callback, and it behaves
+  // sensibly at any tilt, whereas altitude above the ellipsoid says little about
+  // how close you are to what you are looking at.
+  const GROUND_FADED_SCALE = 1200; // fully faded at/below (~zoom 19)
+  const GROUND_OPAQUE_SCALE = 5000; // fully opaque at/above
+  const GROUND_MIN_OPACITY = 0.35;
+
+  const autoGroundOpacity = function (scale) {
+    if (!isFinite(scale) || scale <= 0) return 1;
+    if (scale <= GROUND_FADED_SCALE) return GROUND_MIN_OPACITY;
+    if (scale >= GROUND_OPAQUE_SCALE) return 1;
+
+    const t =
+      (scale - GROUND_FADED_SCALE) / (GROUND_OPAQUE_SCALE - GROUND_FADED_SCALE);
+    return GROUND_MIN_OPACITY + t * (1 - GROUND_MIN_OPACITY);
+  };
+
+  // An explicit value — the slider, or `ground=` in the URL — pins the opacity and
+  // turns the automatic fade off. Nothing set means automatic, which is the default.
+  const applyGroundOpacity = function (scale) {
+    const ground = sceneView.map && sceneView.map.ground;
+    if (!ground) return;
+
+    const pinned = groundStore && groundStore();
+    const opacity =
+      pinned == null || pinned === "" ? autoGroundOpacity(scale) : Number(pinned);
+    if (!isFinite(opacity)) return;
+
+    const clamped = Math.min(1, Math.max(0, opacity));
+    if (ground.opacity !== clamped) ground.opacity = clamped;
+    if (groundSlider && document.activeElement !== groundSlider) {
+      groundSlider.value = String(clamped);
+    }
+  };
+
   const scaleChange = function (newValue, oldValue, propertyName, target) {
     clearTimeout(scaleChangeTimeout);
     scaleChangeTimeout = setTimeout(() => {
@@ -435,6 +554,7 @@ export const arcgisScene = function (config = {}) {
         }
       });
       zoomStore(sceneView.zoom);
+      applyGroundOpacity(scale);
       if (!autoRotate()) updateFov(viewer.facing());
     }, 500);
   };
@@ -546,6 +666,43 @@ export const arcgisScene = function (config = {}) {
       );
       viewer.reload(autoBrightness() ? lastBrightness : "[1,1,1]");
     });
+    // Ground opacity (geocam-pm#290). Dragging this pins the value and stops the
+    // automatic fade — the store is the pin, so `ground=` in the URL does the same
+    // thing and a shared link reproduces what you set. Dragging to 0 is the
+    // "terrain off" case; there is no separate toggle for it.
+    groundStore = viewer.store("ground");
+    groundElement = node("DIV", { class: "geocam-ground-opacity" });
+    const gLabel = node("LABEL", { class: "geocam-ground-opacity-label" });
+    groundSlider = node("INPUT", {
+      type: "range",
+      min: "0",
+      max: "1",
+      step: "0.05",
+      class: "geocam-ground-opacity-slider",
+    });
+    const gSpan = node(
+      "SPAN",
+      { class: "geocam-ground-opacity-span geocam-viewer-control-button" },
+      " Terrain"
+    );
+    groundSlider.value = String(groundStore() == null ? 1 : groundStore());
+    groundSlider.addEventListener("input", () => {
+      groundStore(Number(groundSlider.value));
+    });
+    gLabel.appendChild(gSpan);
+    gLabel.appendChild(groundSlider);
+    groundElement.appendChild(gLabel);
+    viewer.addControl(groundElement, "left-top");
+    unsubGround = groundStore(() => {
+      groundElement.setAttribute(
+        "title",
+        groundStore() == null
+          ? "terrain fades automatically as you zoom in"
+          : `terrain opacity ${groundStore()}`
+      );
+      applyGroundOpacity(sceneView.scale);
+    });
+
     unsubVisible = viewer.visible((v) => updateFov(viewer.facing()));
 
     const [
@@ -696,6 +853,13 @@ export const arcgisScene = function (config = {}) {
       // reference itself. Ground/terrain is deliberately left alone (geocam-pm#286).
       watchUtils.watch(() => sceneView.map.basemap, basemapChange);
 
+      // Let the camera go below the surface, so a faded ground is something you can
+      // actually get under rather than just see through (geocam-pm#290).
+      if (sceneView.map && sceneView.map.ground) {
+        sceneView.map.ground.navigationConstraint = { type: "none" };
+      }
+      applyGroundOpacity(sceneView.scale);
+
       watchUtils.watch(() => sceneView.scale, scaleChange);
       scaleChange(sceneView.scale);
       watchUtils.watch(() => sceneView.center, centerChange);
@@ -776,6 +940,14 @@ export const arcgisScene = function (config = {}) {
         }
 
         sceneView.extent = extent;
+
+        // Pick the default shot only once the camera has finished moving to the
+        // extent set just above, otherwise "nearest to the view" is measured against
+        // wherever the scene happened to open. geocam-pm#291.
+        const layerIndex = geocamLayers.length - 1;
+        watchUtils
+          .whenOnce(() => !sceneView.updating)
+          .then(() => openDefaultShot(geocamLayers[layerIndex], layerIndex));
       });
 
       const pointFeaturesUrl = `${src}/1`;
@@ -845,9 +1017,13 @@ export const arcgisScene = function (config = {}) {
     unsubZoom();
     unsubCenter();
     if (unsubBasemap) unsubBasemap();
+    if (unsubGround) unsubGround();
     unsubVisible();
     sceneView.map.removeLayer(fovLayer);
     viewer.wrapper.removeChild(autoRotateElement);
     viewer.wrapper.removeChild(autoBrightnessElement);
+    if (groundElement && groundElement.parentNode) {
+      groundElement.parentNode.removeChild(groundElement);
+    }
   };
 };
